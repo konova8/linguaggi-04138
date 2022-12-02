@@ -191,3 +191,77 @@ Tutti
 la stessa classe di linguaggi, ovvero i **Linguaggi Regolari**
 
 ## Minimizzazione
+- Se da due stati di un DFA otteniamo lo stesso linguaggio allora gli stati sono equivalenti e il DFA può essere ottimizzato
+- Un DFA si dice **minimo** se non ci sono stati equivalenti al suo interno
+- **Def** Due stati $q_1$ e $q_2$ sono **equivalenti** se
+  - $\forall x \in \Sigma^* \qquad \hat{\delta}(q_1, x) \in F \iff \hat{\delta}(q_2, x) \in F$
+  - cioè se $L[N, q_1] = L[N, q_2]$
+  - 
+### Algoritmo per minimizzare un DFA
+- Cerco di vedere quali coppie di stati **non** sono equivalenti
+1. $\epsilon$ distingue ogni stato di F da ogni stato in $Q \setminus F$
+2. Considero ora le stringhe di lunghezza $1$
+   1. Vedo se distinguono stati
+3. Procedo con stringhe di lunghezza 2, fino a che non riesco a fare nessuna distinzione
+4. Quelli rimasti sono stati equivalenti
+
+### Esempio
+<img src="DFA-minimizzazione-esempio.png">
+
+### Algoritmo pratico
+- Tabella con solo coppie "vere"
+- Al round 0 marco con $x_0$ per segnalare che la coppia è distinta (finale/nonfinale o nonfinale/finale)
+- Al round 1 marco con $x_1$ per distinguere le coppie non ancora marcate
+- Al round 2 marco con $x_2$ ...
+- Mi fermo quando non posso più marcare nulla
+
+### Esempio di prima con Tabella
+<img src="DFA-minimizzazione-esempio-tabella.png">
+
+- **Teorema** Dato un DFA $M = (\Sigma, Q, \delta, q_0, F)$, l'algoritmo di riempimento della tabella a scala termina. Due stati si dicono distinguibili se e solo se la casella corrispondente è marcata
+  - **Dimostrazione** TODO
+
+### Esercizio completo NFA -> DFA -> Minimizzare -> Grammatica Regolare -> Semplificare -> Espressione Regolare
+
+<img src="NFA-DFA-esercizio-completo-1.png">
+<img src="NFA-DFA-esercizio-completo-2.png">
+
+- Questo esercizio dimostra che NFA, DFA, Grammatiche Regolari ed Espressioni Regolari hanno lo stesso potere espressivo
+
+## LEX: Generatore di Scanner
+- Lex e Flex sono software per generare un analizzatore lessicale
+- Prendono in input un programma `.l` e in output restituiscono un programma C che realizza l'automa riconoscitore
+
+## Pumping Lemma (IMPORTANTE)
+- Se $L$ è regolare, allora $\exists N > 0$ tale che $\forall z \in L$ con $|z| \geq N$, $\exists u, v, w$ tali che
+  - $z = uvw$
+  - $|uv| \leq N$
+  - $|v| \geq 1$
+  - $\forall k \geq 0 \qquad u v^k w \in L$
+- Inoltre $N$ è minore o uguale al numero di stati del DFA minimo che accetta $L$
+  - **Dimostrazione** TODO (Questa è da fare)
+
+### Negazione del Pumping Lemma
+- **SE** $\forall N > 0, \exists z \in L$ con $|z| \geq N$, $\forall u, v, w$
+  - Se
+    - $z = uvw$
+    - $|uv| \leq N|$
+    - $|v| \geq 1$
+  - Allora
+    - $\exists k \geq 0, u v^k w \not \in L$
+- **ALLORA** $L$ non è regolare
+
+### Esempio
+<img src="es-pumping-lemma.png">
+
+## Altre proprietà dei linguaggi regolari
+- **Proposizione** La classe di linguaggi regolari è chiusa per
+  - Unione
+  - Concatenazione
+  - Stella di Kleene
+  - Complementazione
+  - Intersezione
+- **Dimostrazione** TODO
+
+# Capitolo 4 - Analisi Sintattica
+## Linguaggi Liberi
