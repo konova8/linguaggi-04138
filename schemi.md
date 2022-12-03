@@ -1,10 +1,9 @@
-# Capitolo 1 - Interpreti e Compilatori
+# 1 - Interpreti e Compilatori
 $I^{L_A}_{L_B} \rArr$ Interprete scritto in $L_A$ per il linguaggio $L_B$
 
 $C^{L_A}_{L_B, L_C} \rArr$ Compilatore scritto in $L_A$, che traduce da $L_B$ in $L_C$
 
-# Capitolo 2
-## Descrivere un linguaggio di programmazione
+# 2 - Descrivere un linguaggio di programmazione
 - **Sintassi**: Regole di formazione
 - **Semantica**: Attribuzione di significato
 - **Pragmatica**: In quale modo frasi corrette?
@@ -98,7 +97,7 @@ $$\{a^n b^n c^m d^m | n, m \geq 1\} \cup \{a^n b^m c^m d^n | n, m \geq 1\}$$
 ### Semantica delle espressioni aritmetiche
 EVENTUALMENTE AGGIUNGERE COSE (TODO)
 
-# Capitolo 3 - Analisi Lessicale
+# 3 - Analisi Lessicale
 ## Analisi Lessicale
 - Riconoscere nella stringa in ingresso gruppi di simboli che corrispondono a specifiche categorie sintattiche
 - La stringa in input è trasformata in una sequenza di *token*
@@ -263,5 +262,127 @@ la stessa classe di linguaggi, ovvero i **Linguaggi Regolari**
   - Intersezione
 - **Dimostrazione** TODO
 
-# Capitolo 4 - Analisi Sintattica
+# 4 - Analisi Sintattica
 ## Linguaggi Liberi
+- Grammateiche libere sono più generali di quelle regolari
+
+| Regolari | Libere |
+| :-: | :-: |
+| $V \rarr aW$ o $V \rarr a$ o $S \rarr \epsilon$ con $V, W \in NT, a \in T$ | $V \rarr \alpha$ con $\alpha \in (T \cup NT)^*, V \in NT$
+
+- Automi a pila (*pushdown automata*, PDA) invece di automi finiti
+  - Non determinisitici -> Linguaggi liberi
+  - Deterministici -> Costruzione dei compilatori
+    - Top-down -> Grammatiche $LL(K)$
+    - Bottom-up -> Grammatiche $LR(K)$
+
+## Analisi Sintattica
+- **Def** Una **Grammatica libera** è una quadrupla $G = (NT, T, R, S)$ con
+  - $NT$ è un insieme finito di non terminali
+  - $T$ è un insieme finito di terminali
+  - $S \in NT$ è il simbolo iniziale
+  - $R$ è un insieme finito di produzioni del tipo
+    - $V \rarr \alpha$ con $\alpha \in (T \cup NT)^*, V \in NT$
+- **Def** Derivazione *leftmost*, viene sempre riscritto il non terminale più a sinistra
+- **Def** Derivazione *rightmost*, viene sempre riscritto il non terminale più a destra
+- Potenziamo quindi gli NFA e i DFA per fargli "ricordare" cosa abbiamo già scorso
+  - Usiamo una **pila**
+
+### PDA
+- **Def** Un **PDA** è una settupla $(\Sigma, Q, \Gamma, \delta, q_0, \bot, F)$ dove
+  - $\Sigma$ è un alfabeto finito
+  - $Q$ è un insieme finito di stati
+  - $\Gamma$ è un insieme finito di simboli della pila
+  - $\delta$ è una funzione di transizione con tipo
+    - $\delta \colon Q \times (\Sigma \cup \{\epsilon\}) \times \Gamma \rarr P_{fin} (Q \times \Gamma ^*)$
+    - $(\Sigma \cup \{\epsilon\})$ consuma un simbolo di input ($\Sigma$) oppure no ($\epsilon$)
+    - Sulla pila scrive una stringa di lunghezza qualsiasi (anche $\epsilon$) di simboli di $\Gamma$
+- È **non deterministico** perchè ci possono essere più funzioni di transizione con lo stesso tipo
+
+### Linguaggio Accettato
+- Due modalità di riconoscimento
+  - Per stato finale (indicato con $L[N]$)
+  - Per pila vuota (indicato con $P[N]$)
+
+### Esempio
+- Per il linguaggio $\{ww^R \mid w \in \{a, b\}^*\}$
+- Diagramma di transizione del PDA
+
+<img src="PDA-es1.png">
+
+- In questo caso svuoto la pila se e solo se vado sullo stato $s_2$, quindi il PDA per stato finale e per pila vuota è equivalente
+
+### Differenze tra pila vuota e stato finale
+- La classe dei linguaggi riconosciuti per pila vuota o per stato finale **non cambia**
+- **Teorema**
+  - Se $L = P[N]$ per pila vuota, possiamo costruire $N'$ tale che $L = L[N']$
+  - Se $L = L[N]$ per stato finale, possiamo costruire $N'$ tale che $L = P[N']$
+- **Dimostrazione** TODO
+
+- **Teorema** Un linguaggio $L$ è libero $\iff$ è accettato da un PDA
+  - **Dimostrazione** TODO (da fare solo ->, non <-)
+
+### Proprietàdi chiusura dei lingauggi liberi
+- **Teorema** I linguaggi liberi sono **chiusi** per
+  - Unione
+  - Concatenazione
+  - Ripetizione (stella di Kleene)
+- **Dimostrazione** TODO
+
+- **Teorema** L'**intersezione** $L_1 \cap L_2$ di un linguaggio **libero** $L_1$ con un lingauggio **regolare** $L_2$ è un linguaggio libero
+- **Dimostrazione** TODO
+
+- Si può usare questo teorema per *dimostrare che un linguaggio non nè libero*
+  - Basta metterlo in intersezione con un linguaggio regolare e dimostrare chge l'intersezione non è libero
+
+### Pumping Theorem
+- Se $L$ è libero, allora $\exists N > 0$ tale che $\forall z \in L$ con $|z| \geq N, \exists u, v, w, x, y$ tali che
+  1. $z = uvwxy$
+  2. $|vwx| \leq N$
+  3. $|vx| \geq 1$
+  4. $\forall k \geq 0, \quad u v^k w x^k y \in L$
+- **Dimostrazione** TODO
+
+- Usiamo il Pumping Theorem "al contrario" per dire che un linguaggio non è libero
+  - SE $\forall N > 0 \exists z \in L$ con $|z| \geq N$ tale che $\forall u, v, w, x, y$
+    - Se
+      1. $z = uvwxy$
+      2. $|vwx| \leq N$
+      3. $|vx| \geq 1$
+    - Allora $\exists k \geq 0, \quad u v^k w x^k y \not \in L$
+  - ALLORA $L$ non è libero
+
+#### Esempio di utilizzo
+<img src="pumping-theorem-es.png">
+
+# 5 - Linguaggi liberi deterministici, DPDA e Semplificazione di grammatiche
+
+## Linguaggi liberi deterministici e DPDA
+- **Def** Un PDA si dice **deterministico** e si indica con **DPDA** se e solo se
+  1. $\forall q \in Q, \forall z \in \Gamma$
+     - Se $\delta(q, \epsilon, z) \neq \emptyset$
+     - Allora $\delta(q, a, z) = \emptyset \quad \forall a \in \Sigma$
+  2. $\forall q \in Q, \forall z \in \Gamma, \forall a \in \Sigma \cup \{ \epsilon \} \quad |\delta(q, a, z)| \leq 1$
+
+- **Def** Un linguaggio è **libero deterministico** se è accettato per **stato finale** da un DPDA
+  
+- **Teorema** La classe dei linguaggi liberi deterministici è inclusia propriamente nella classe dei linguaggi liberi
+  
+- **Proposizione** Se $L$ è regolare, allora $\exists$ DPDA $N$ tale che $L = L[N]$ per stato finale
+  - **Dimostrazione** TODO
+  
+## Prefix Property
+
+- **Fatto** Un linguaggio libero deterministico $L$ è riconosciuto da un DPDA per pila vuota SE E SOLO SE $L$ gode della **prefix property**
+  - **Prefix Property** $\not \exists x, y \in L$ tale che $x$ è prefisso di $y$
+
+### Esempio di utilizzo con DPDA
+<img src="DPDA-prefix-property-es1.png">
+
+### ALTRO ESEMPIO MOLTO IMPORTANTE
+<img src="DPDA-prefix-property-es2.png">
+
+### ALTRO ESEMPIO MOLTO IMPORTANTE
+<img src="DPDA-prefix-property-es3.png">
+
+ARRIVATO FINO A PAGINA 6
