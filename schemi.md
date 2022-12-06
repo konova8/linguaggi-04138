@@ -385,4 +385,40 @@ la stessa classe di linguaggi, ovvero i **Linguaggi Regolari**
 ### ALTRO ESEMPIO MOLTO IMPORTANTE
 <img src="img/DPDA-prefix-property-es3.png">
 
-ARRIVATO FINO A PAGINA 6
+## Proprietà dei lingauggi liberi deterministici
+- Chiusi per complementazione
+- *NON* Chiusi per interesezione
+- *NON* Chiusi per unione
+
+## Parser
+- Due tipi:
+  - **Top-Down**: derivazione *leftmost* per $w$ a partire dal simbolo iniziale $S$ (all'inizio della pila)
+  - **Bottom-Up**: Derivazione *rightmost* (a rovescio) a partire dalla stringa $w$ cercando di ridurlo al simbolo iniziale $S$ (alla fine della pila)
+
+### Top-Down Parsing
+- Data $G = (NT, T, S, R)$ libera, costruiamo il PDA $M = (T, \{q\}, T \cup NT, \delta, q, S, \empty)$, che riconosca per pila vuota, con $\delta$ definita come:
+  - $(q, \beta) \in \delta(q, \epsilon, A) \quad$ se $A \rarr \beta \in R$ (espandi)
+  - $(q, \epsilon) \in \delta(q, a, a) \quad \forall a \in T$ (consuma)
+- **Non deterministico!**
+  - Occorre *look-ahead*
+
+#### Esempio
+<img src="img/top-down-es.png">
+
+### Bottom-Up Parsing
+- Data $G = (NT, T, S, R)$ libera, costruiamo il PDA, che riconosca $L(G)\$$, $M = (T, \{q\}, T \cup NT \cup \{z\}, \delta, q, z, \empty)$ dove:
+  - $(q, aX) \in \delta(q, a, X) \quad \forall a \in T, \forall X \in T \cup NT \cup \{z\}$ (SHIFT)
+  - $(q, A) \in \delta(q, \epsilon, \alpha^R) \quad$se $A \rarr a \in R$ (REDUCE)
+  - $(q, \epsilon) \in \delta(q, \$, Sz)$ (ACCEPT)
+
+- **Non deterministico!**
+  - Conflitti *shift-reduce*
+  - Conflitti *reduce-reduce*
+- Per ottenere un DPDA serve introdurre informazioni agiuntive per risolvere i conflitti
+  - Più stati
+  - Look-ahead
+
+#### Esempio
+<img src="img/bottom-up-es.png">
+
+ARRIVATO A PAGINA 18
