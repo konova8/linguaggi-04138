@@ -59,7 +59,7 @@ Esempio: $G: S \rarr aSb | ab$ genera $L(G) = \{a^n b^n | n \geq 1 \}$
 $$\{a^n b^n c^m d^m | n, m \geq 1\} \cup \{a^n b^m c^m d^n | n, m \geq 1\}$$
 
 ## Struttura di un Compilatore
-<img src="struttura-di-un-compilatore.png">
+<img src="img/img/struttura-di-un-compilatore.png">
 
 ## Fasi principali della Compilazione
 ### Analisi Lessicale (Scanner)
@@ -125,7 +125,7 @@ $$ r ::= \emptyset \mid \epsilon \mid a \mid r \bullet r \mid r | r \mid r^* $$
 ### Diagrammi di Transizione
 $$L = \{ w \in \{ 0, 1\}^* \mid \text{numero di 0 e 1 è pari}\}$$
 
-<img src="diagramma-di-transizione.png">
+<img src="img/img/diagramma-di-transizione.png">
 
 ## Automi Finiti Nondeterministici
 - Un NFA è un quintupla $(\Sigma, Q, \delta, q_0, F)$ dove
@@ -145,7 +145,7 @@ $$\delta: Q \times (\Sigma \cup \{ \epsilon \}) \rarr P(Q)$$
 - Un DFA è una quintupla $(\Sigma, Q, \delta, q_0, F)$, dove $\Sigma, Q, q_0, F$ sono definiti come un NFA, ma $\delta$ ha tipo $\delta: Q \times \Sigma \rarr Q$
 - **Proposizione**: Per ogni NFA, è possibile costruire un DFA ad esso equivalente
 ### Esempio
-<img src="NFA-to-DFA.png">
+<img src="img/img/NFA-to-DFA.png">
 
 ### Costruzione dei sottoinsiemi
 Dato un NFA $N = (\Sigma, Q \delta, q_0, F)$
@@ -159,7 +159,7 @@ Dato un NFA $N = (\Sigma, Q \delta, q_0, F)$
       - add $R$ to $T$
     - Definisci $\Delta (P, a) = R$
 ### Esempio Corposo
-<img src="DFA-corposo.png">
+<img src="img/img/DFA-corposo.png">
 
 ## Equivalenza NFA - DFA
 - **Teorema** Sia $N$ un NFA e sia $M_N$ l'automa ottenuto con la costruzione per sottoinsiemi. Allora $M_N$ è un DFA e si ha $L[N] = L[M_N]$
@@ -205,7 +205,7 @@ la stessa classe di linguaggi, ovvero i **Linguaggi Regolari**
 4. Quelli rimasti sono stati equivalenti
 
 ### Esempio
-<img src="DFA-minimizzazione-esempio.png">
+<img src="img/img/DFA-minimizzazione-esempio.png">
 
 ### Algoritmo pratico
 - Tabella con solo coppie "vere"
@@ -215,15 +215,15 @@ la stessa classe di linguaggi, ovvero i **Linguaggi Regolari**
 - Mi fermo quando non posso più marcare nulla
 
 ### Esempio di prima con Tabella
-<img src="DFA-minimizzazione-esempio-tabella.png">
+<img src="img/img/DFA-minimizzazione-esempio-tabella.png">
 
 - **Teorema** Dato un DFA $M = (\Sigma, Q, \delta, q_0, F)$, l'algoritmo di riempimento della tabella a scala termina. Due stati si dicono distinguibili se e solo se la casella corrispondente è marcata
   - **Dimostrazione** TODO
 
 ### Esercizio completo NFA -> DFA -> Minimizzare -> Grammatica Regolare -> Semplificare -> Espressione Regolare
 
-<img src="NFA-DFA-esercizio-completo-1.png">
-<img src="NFA-DFA-esercizio-completo-2.png">
+<img src="img/NFA-DFA-esercizio-completo-1.png">
+<img src="img/NFA-DFA-esercizio-completo-2.png">
 
 - Questo esercizio dimostra che NFA, DFA, Grammatiche Regolari ed Espressioni Regolari hanno lo stesso potere espressivo
 
@@ -251,7 +251,7 @@ la stessa classe di linguaggi, ovvero i **Linguaggi Regolari**
 - **ALLORA** $L$ non è regolare
 
 ### Esempio
-<img src="es-pumping-lemma.png">
+<img src="img/es-pumping-lemma.png">
 
 ## Altre proprietà dei linguaggi regolari
 - **Proposizione** La classe di linguaggi regolari è chiusa per
@@ -308,7 +308,7 @@ la stessa classe di linguaggi, ovvero i **Linguaggi Regolari**
 - Per il linguaggio $\{ww^R \mid w \in \{a, b\}^*\}$
 - Diagramma di transizione del PDA
 
-<img src="PDA-es1.png">
+<img src="img/PDA-es1.png">
 
 - In questo caso svuoto la pila se e solo se vado sullo stato $s_2$, quindi il PDA per stato finale e per pila vuota è equivalente
 
@@ -353,7 +353,7 @@ la stessa classe di linguaggi, ovvero i **Linguaggi Regolari**
   - ALLORA $L$ non è libero
 
 #### Esempio di utilizzo
-<img src="pumping-theorem-es.png">
+<img src="img/pumping-theorem-es.png">
 
 # 5 - Linguaggi liberi deterministici, DPDA e Semplificazione di grammatiche
 
@@ -377,12 +377,12 @@ la stessa classe di linguaggi, ovvero i **Linguaggi Regolari**
   - **Prefix Property** $\not \exists x, y \in L$ tale che $x$ è prefisso di $y$
 
 ### Esempio di utilizzo con DPDA
-<img src="DPDA-prefix-property-es1.png">
+<img src="img/DPDA-prefix-property-es1.png">
 
 ### ALTRO ESEMPIO MOLTO IMPORTANTE
-<img src="DPDA-prefix-property-es2.png">
+<img src="img/DPDA-prefix-property-es2.png">
 
 ### ALTRO ESEMPIO MOLTO IMPORTANTE
-<img src="DPDA-prefix-property-es3.png">
+<img src="img/DPDA-prefix-property-es3.png">
 
 ARRIVATO FINO A PAGINA 6
