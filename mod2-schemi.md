@@ -237,3 +237,91 @@ Se ho dati a dimensione variabile ottengo l'offset per le variabili locali si us
 - Deallocazione dello spazio sulla pila
 - Ripristino del valore del Program Counter
 
+## Allocazione Dinamica: Heap
+**Heap**: regione di memoria in cui posso allocare e deallocare i blocchi in disordine
+
+Necessaria quando permesso:
+- Allcoazione esplicita di memoria a run time
+- Oggetti di dimensioni variabili
+- Oggetti con tempo di vita indefinito
+
+La sua gestione non è banale
+
+### Blocchi di dimensione fissa
+- In origine tutti i blocchi collegati nella **lista libera**
+- Allocazione: Blocchi contigui
+- Deallocazione: restituzione alla lista libera
+
+### Blocchi a dimensione variabile
+- Inizialmente blocco unico nella heap
+- Allocazione: Determinazione di un blocco libero della giusta dimensione
+- Deallocazione: restituzione alla lista libera
+
+**Problemi**:
+- Le operazioni devono essere efficienti
+- Necessario evitare lo spreco di memoria dovuto alla frammentazione
+
+### Frammentazione
+- Frammentazione **interna**: lo spazio richiesto è $X$ e viene allocato un blocco di dimensione $Y > X$, spreco spazio
+- Frammentazione **esterna**: ci sarebbe lo spazio necessario ma il blocco è "spezzato"
+
+### Gestione della lista libera: unica lista
+Ad ogni richiesta cerca il blocco di dimensione opportuna:
+- **First Fit**: primo blocco grande abbastanza
+  - Più veloce, occupazione di memoria peggiore
+- **Best Fit**: blocco con spreco minore su tutta la lista
+  - Meno veloce, occupazione di memoria migliore
+
+Se il blocco è più grande di quello che serve il blocco viene diviso in due e la parte inutilizzata aggiunta alla *Lista Libera* \\
+Quando un blocco viene de-allocato viene restituito alla LL, e se un blocco adiacente è libero vengono fusi insieme
+
+### Multiple liste libere
+Per blocchi di dimensione diversa la ripartizione dei blocchi fra le varie liste può essere
+  - Statica
+  - Dinamica (*Buddy system* o *Fibonacci system*)
+
+**Buddy system**: $k$ liste, la lista $k$ ha blocchi di dimensione $2^k$
+  - Se richiesta allocazione per blocco di dimensione $2^k$ e non è disponibile prendo un blocci di dimensione $2^{k+1}$
+  - Se un blocco di $2^k$ è de-allocato è riunito alla sua metà, se disponibile
+
+**Fibonacci system**: simile, ma le dimensioni dei blocchi non sono le potenze di due ma i numeri di Fibonacci
+
+## Implementazione delle Regole di Scope
+- Scope Statico
+  - Catena Statica
+  - Display
+- Scope Dinamico
+  - A-list
+  - Tabella centrale dell'ambiente (CRT)
+
+### Record di Attivazione per Scoping Statico
+- Link Dinamico: Puntatore al RdA precedente sulla pila (RdA del chiamante)
+- Link Statico: Puntatore al RdA del blocco che contiene immediatamente il testo del blocco in esecuzione
+  - Nel caso delle funzioni è dove la funzione è definita
+
+![Record di Attivazione per Scoping Statico](img-schemi/RdAScopeStatico.png)
+
+Nota: Link dinamico dipende dalla sequenza di esecuzione del programma, Link statico dipende dall'annidamento sintattico del programma
+
+### Catena Statica
+Chiamate in sequenza A, B, C, D, E, C. Nell'immagine sono rappresentati tratteggiati i Link Statici
+
+![Esempio Catena Statica](img-schemi/esCatenaStatica2.png) ![Esempio Catena Statica](img-schemi/esCatenaStatica.png)
+
+Quindi se un sottoprogramma è annidato a livello k, allora la catena è lunga k!
+
+![Reale esempio di Catena Statica](img-schemi/realEsCatenaStatica.png)
+
+Il link statico del chiamato è determinato dal chiamante, conoscendo il proprio RdA e l'annidamento statico dei blocchi
+
+- Se $k = 0$ il chiamante passa a chiamato il proprio puntatore
+- Se $k > 0$ il chiamante risale la propria catena di $k$ passi e passa il puntatore così determinato
+
+Nell'esempio di prima, chiamate A, B, C, D, E, C \\
+I dati di catena statica sono: A; (B, 0); (C, 1); (D, 0); (E, 1); (C, 2) (TODO DA FARE cosa sono?)
+![Esempio Catena Statica](img-schemi/esCatenaStatica2.png) ![Esempio Catena Statica](img-schemi/esCatenaStatica.png)
+Per l'ultima chiamata avremo quindi che E chiama C, che ha un livello di annidamento rispetto ad E
+Quindi dovrò salire la catena statica di k passi, il link statico di E punta a C, quindi ho fatto i passi necessari e ora copio il puntatore dentro al primo C dentro al secondo C
+
+Nota: Per le regole di visibilità non ci sono altri casi
+
