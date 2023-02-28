@@ -14,8 +14,19 @@ I lingauggi dichiarativi si dividono in due gruppi
   - Basati sulle relazioni
 
 ## Come Confrontare i Linguaggi
+**Caratteristiche intrinseche**:
+- Espressività
+- Didattica
+- Leggibilità
+- Robustezza
+- Generalità
+- Efficienza
 
-    DA FARE
+**Caratteristicche esterne**:
+- Diffusione
+- Standardizzazione
+- Integrabilità
+- Portabilità
 
 # Nomi
 - Un **nome** è una sequenza di caratteri usata per *denotare* qualcos'altro
