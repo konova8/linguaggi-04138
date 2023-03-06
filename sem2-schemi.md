@@ -325,3 +325,84 @@ Quindi dovrò salire la catena statica di k passi, il link statico di E punta a 
 
 Nota: Per le regole di visibilità non ci sono altri casi
 
+### Display
+Si può ridurre il tempo di accesso ad una costante usando la tecnica del **Display**:
+- La catena statica viene rappresentata come un array, lo i-esimo elemento è un puntatore al RdA del sottoprogramma di livello di annidamento i, attivo per ultimo
+- Se un sottoprogramma corrente è annidato al livello $i$ un oggetto in uno scope esterno di $h$ livelli può essere trovato guardando il punatore al RdA nel *display* in posizione $j = i - h$
+- `display[i]` = Puntatore al RdA della procedura di livello `i`, attiva per ultimo
+
+![Display es 1](img-schemi/displayEs1.png) ![Display es 2](img-schemi/displayEs2.png)
+
+#### Come determinare il display
+È il *chiamato* a maneggiare il display
+
+### Display vs Catena Statica
+Il display è più costoso da mantenere della catena statica nella sequenza di chiamata, oggi è poco usato
+
+### Scope Dinamico
+L'associazione nomi-oggetti denotabili dipende dal flusso del controllo a run-time e dall'ordine con cui i sottoprogrammi sono chiamati
+
+L'implementazione ovvia è quella di memorizzare i nomi direttamente nei RdA, la ricerca del nome avviene risalendo la pila. \\
+Questo è chiaramente inefficiente
+
+### A-list
+Assocazioni memorizzate in struttura apposita, manipolata come una pila
+
+![Alist esempio](img-schemi/aListEs.png)
+
+Molto semplice da implementare, ma occupa molta memoria e i tempi di accesso sono comunque lineari per la lunghezza della lista
+
+### Tabella centrale dei riferimenti (CRT)
+Evita le lunghe scansioni delle A-list, è una tabella (hash table) che contiene i nomi distinti del programma:
+- Se i nomi sono noti staticamente, posso accedere all'elemento della tabella in tempo costante
+- Altrimenti faccio l'accesso come una hash table
+
+Gestione più complessa di A-list, ma occupa molta meno memoria, inoltre il tempo di accesso è costante
+
+# Strutturare il controllo
+## Espressioni
+"Entità sintattica la cui valutazione produce un valore oppure non termina, nel quel caso l'espressione è indefinita"
+- *infissa*: `a + b`
+- *prefissa (polacca)*: `+ a b`
+- *postfissa (polacca inversa)*: `a b +`
+
+### Notazione infissa `a + b`
+Regole di precedenza e associatività, necessario usare le parentesi in alcuni casi: `(15-4)*3`
+
+Valutazione non sempre semplice
+
+### Notazione postfissa `a b +`
+Valutazione molto più semplice della infissa, nessuna regola e basta una pila per la valutazione
+
+### Notazione prefissa `+ a b`
+Valutazione molto più semplice della infissa, nessuna regola e basta una pila per la valutazione, ma dobbiamo contare gli operandi che vengono letti
+
+### Valutazione delle espressioni
+Internamente rappresentate da alberi, visite diverse producono varie notazioni
+
+A partire dall'albero il compilatore produce il codice oggeto oppure l'interprete valuta l'espressione
+
+### Effetti collaterali
+`(a + f(b)) * (c + f(b))`
+
+Se `f` modifica `b` il risultato da sinistra a destra è diverso da quello da destra a sinistra
+
+Alcuni linguaggi usando sistemi per risolvere questi problemi
+
+### Operandi non definiti
+`a == 0 ? b : b/a`
+
+In C si ha una valutazione **lazy**, ovvero si valutano solo gli operandi strettamente necessari
+- Detta *corto circuito* se la valutazione del primo operando viene evitato un errore
+
+Valutazione **eager**: Tutti gli operandi sono comunque valutati
+
+### Comandi
+"Entità sintattica la cui valutazione non necessariamente resituisce un valore, ma può avere un effetto collaterale"
+
+Sono solo nei linguaggi imperativi, e non in quelli funzionali o logici
+
+In alcuni casi lo restituiscono, come per `=` in C
+- Se in C scrivo `x = 5`, ho come valore di ritorno `5`, e come effetto collaterale che `x` avrà valore `5`
+- Se in Java o altro scrivo `x = 5` ho solo come effetto collaterale che `x` avrà valore `5`
+
