@@ -397,7 +397,7 @@ In C si ha una valutazione **lazy**, ovvero si valutano solo gli operandi strett
 
 Valutazione **eager**: Tutti gli operandi sono comunque valutati
 
-### Comandi
+## Comandi
 "Entità sintattica la cui valutazione non necessariamente resituisce un valore, ma può avere un effetto collaterale"
 
 Sono solo nei linguaggi imperativi, e non in quelli funzionali o logici
@@ -405,4 +405,85 @@ Sono solo nei linguaggi imperativi, e non in quelli funzionali o logici
 In alcuni casi lo restituiscono, come per `=` in C
 - Se in C scrivo `x = 5`, ho come valore di ritorno `5`, e come effetto collaterale che `x` avrà valore `5`
 - Se in Java o altro scrivo `x = 5` ho solo come effetto collaterale che `x` avrà valore `5`
+
+### Variabili
+Nei linguaggi imperativi la variabile è modificabile, è un contentitore di valori che ha un nome
+
+Nei linguaggi funzionali il modello è analogo a quello matematico, quindi il valore non è modificabile
+
+Nei linguaggi logici il modello è simile a quello dei linguaggi funzionali, ma entro certi limiti il valore può essere modificato
+
+#### Modello a riferimento
+Variabile come "riferimento" ad un valore, che ha un nome \\
+Analogo alla notazione di puntatore, questo comporta che scrivere `X=Y` implica che `X` diventi un alias per `Y`
+
+### Ambiente e Memoria
+Due variablili diverse possono denotare lo stesso oggetto (*aliasing*)
+
+#### Linguaggi Imperativi
+Tre domini semantici:
+- Valori Denotabili: a cui si può dare un nome
+- Valori Memorizzabili: i quali si possono memorizzare
+- Valori esprimibili: i quali sono il risultato di una valutazione di una espressione
+
+Per i linguaggi imperativi si usano:
+- Ambiente: Nomi -> Valori Denotabili
+- Memoria: Locazioni -> Valori Memorizzabili
+- Esempio: `x = 2` implica che l'ambiente sia l'associazione tra il nome `x` e la locazione di memoria assegnata, e la memoria sia l'assocazione tra la locazione di memoria e il valore `2`
+
+I linguaggi funzionali invece usano solo l'ambiente
+
+### Comandi per il controllo sequenza
+#### ;
+Comunemente un terminatore
+
+#### { ... }
+Metodo per comporre comandi, il valore di un comando composto è quello dell'ultimo comando
+
+#### GOTO
+Dibattuta l'utilità del GOTO, considerato dannoso
+
+#### Programmazione Strutturata
+- Design top-down o bottom-up
+- Codice modulare
+- Nomi identificativi significativi
+- Uso esteso di commenti
+- Tipi di dato strutturati
+- Comandi per il controllo strutturati
+- ...
+
+#### Conclusione
+Un solo punto di ingresso e uno solo di uscita, fondamentale per la comprensione del codice
+
+### Comandi condizionali
+#### if then else
+Rami multipli in base alla condizione, in fase di compilazione può essere ottimizzato creando un cortocircuito
+
+#### Case
+Discendente del GOTO, nei linguaggi varie versioni, è come uno switch
+
+Rispetto all'if then else il case è più leggibile ed è più efficiente
+
+NB: Lo switch di C/Java è un case espanso
+
+### Iterazione
+Iterazione e ricorsione sono i due meccanismi che permettono di ottenere formalismi di calcolo, rendono i linguaggi Turing completi
+
+Due possibilità:
+- Indeterminata: Cicli controllati logicamente (`while`, `repeat`, ...)
+- Determinata: Cicli controllati numericamente (`do`, `for`, ...)
+
+#### for
+```
+FOR indice := inizio TO fine BY passo DO
+  ...
+END
+```
+Nel for non è possibile modificare indice, inizio, fine e passo. Altrimenti il numero di cicli non sarebbe determinato
+
+NB: In C il for non è un costrutto di iterazione determinata, perchè è possibile fare un for con una condizione che non è verificabile, quindi non è paragonabile ad un while come potenza espressiva
+
+Solo con for ed if il linguaggio non è turing completo, perchè non è possibile creare programmi che non terminano
+
+### Ricorsione
 
