@@ -77,16 +77,75 @@ True e False, operazioni logiche principali
 
 A seconda del linguaggio richiedono 1 o più byte
 
+## Tipi Carattere
+- Valori: Un insieme di codici di caratteri (ASCII e UNICODE)
+- Operazioni: Dipendono dal linguaggio (`==`, `<`, `>`)
 
+## Tipi Interi
+- Valori: Un sottoinsieme finito di numeri interi
+- Operazioni: uguaglianza, confronti e principali operazioni aritmetiche
 
+## Tipi Reali
+- Valori: Un sottoinsieme finito di numeri reali, memorizati tramite virgola fissa/mobile
+- Operazioni: uguaglianza, confronti e principali operazioni aritmetiche
 
+## Tipi Enumeration
+`enum RogueOne { Jyn, Cassian, Chirrut, K2SO, Bodhi, Baze }`
 
+Introduce un nuovo insieme chiamato `RogueOne` costituito da un insieme di 6 elemnti
 
+*Non tutti i linguaggi integrano gli enum in modo sicuro*, infatti C equipara completamente i valori all'interno dell'`enum` ad interi
 
+## Extensional vs Intensional Types
+- **Estensionale**: modo in cui l'utente specifica gli `enum`, ovvero elencando lui i valori possibili
+  - quando è più efficiente (per spazio o computazione) specificare gli abitanti del tipo o non abbiamo un insieme chiaro di regole che li definiscono
+- **Intensionale**: modo in cui i lingauggi specificano interi, float, ecc. Ovvero non facendoli decidere all''itente
+  - quando si dispone di un insieme definito di proprietà che identificano solo gli abitanti (valori validi) del tipo che stiamo definendo, con il vantaggio di risparmiare memoria se l'insieme degli abitanti è grande e di rendere possibile la definizione, nel caso di insiemi infiniti
 
+## Tipi Composti
+Possiamo creare nuovi tipi componendo quelli di base (come gli `enum` in C)
 
+Altre strutture possono essere *array*, *insiemi* e *puntatori*
 
+## Tipi Array
+Insieme di elementi dello certo tipo, indicizzato da almeno una *chiave identificativa* di un certo tipo
 
+Operazioni:
+- Selezione (`a[e]` e `a[e1][e2][e3]`)
+  - Nota: è un'operazione del tipo come `+`, ecc
+- Assegnazione
+- Confronti
+- Operazioni Aritmetiche
+
+I linguaggi safe verificano che ogni accesso ad un elemento di un array avvenga entro i limiti di dimensione, il C non lo fa, ed infatti C è soggetto ad attacchi di **buffer-overflow**
+
+Array multidimensionali possono essere memorizzati in *Row-major order* o in *Column-major order*, a seconda di quale implementazione viene scelta (a runtime) e della modalità di accesso può dare vita a prestazioni diverse (più o meno accessi in cache)
+
+Il **numero di dimensioni** e i **loro intervalli** determinano la forma di un array. A seconda del linguaggio si deve o meno fissare la forma degli array. Se la forma è fissa possiamo metterlo in Stack, altrimenti con array dinamici è necessario metterlo nello Heap
+
+Nel caso di array di forma statica nello Stack di memorizza il *Stack Frame*, che comprende *Frame pointer* e i valori dell'array
+
+In caso di array di forma dinamica il descrittore dell'array è memorizzato nello Stack e si chiama **dope vector**:
+- Puntatore a dove si trova l'array nella Heap
+- Tipo degli elementi
+- Dimensioni (rank) dell'array
+- Lunghezza
+- *Extent in use*, quantità dinamica di memoria per risparmiare spazio
+- *Max extent*, circa uguale
+- *Stride*, Tipo degli elementi (comprese strutture dati), spesso uguale al tipo degli elementi base
+
+### Differenze tra i tipi Array in C, Java e Rust
+![Differenze Array](img-schemi/arr-diff-c-java-rust.png)
+
+## Tipi Insieme
+Denota una struttura dati piatta e senza ordine, di valori unici e dello stesso tipo
+
+Operazioni possibili sono *test di inclusione*, e le comuni operazioni sugli insiemi
+
+Un modo efficiente per rappresentare un insiemee un array di lunghezza pari alla cardinalità del tipo di base in bit, chiamato **array caratteristico** \
+In esso il bit j-esimo indica se l'elemento appartiene o meno all'insieme. Questo però occupa moltissimo spazio, infatti oggi si usano le tabelle hash
+
+## Tipi Riferimento
 
 
 
