@@ -485,5 +485,197 @@ NB: In C il for non è un costrutto di iterazione determinata, perchè è possib
 
 Solo con for ed if il linguaggio non è turing completo, perchè non è possibile creare programmi che non terminano
 
+##### Passo Negativo
+In alcuni linguaggi c'è una sintassi esplicita per avere passo negativo (Pascal e Ada)
+
+In altri si usa un *iteration count* calcolato come
+$$ic = \lfloor \frac{fine - inizio + passo}{passo} \rfloor$$
+
 ### Ricorsione
+Modo alternativo l'iterazione per ottenere il potere espressivo delle Macchine di Turing
+
+Ricorsione possibile se il linguaggio permette chiamate di una funzione `foo` dentro la stessa `foo` e ho una gestione dinamica della memoria
+
+Generalmente la ricorsione è meno efficente e più lenta dell'iterazione
+
+> Ogni programma ricorsivo/iterativo può essere tradotto in uno iterativo/ricorsivo
+
+#### Tail Recursion
+Una chiamata ricorsiva è detta *in coda* se con il suo risultato non devo fare operazioni ed è al termine della funzione
+
+Questo mi permette di "riciclare" il RdA della chiamata precedente, aggiornando i valori al suo interno
+
+# Astrazione sul controllo: sottoprogrammi ed eccezioni
+## Astrazione
+> Identificare proprietà importanti di cosa si vuole descrivere, concentrandosi solo su quelle rilevanti
+
+### Astrazione sul controllo
+Sottoprogrammi, blocchi, parametri. Specifica una procedura/funzione senza conoscere il contesto
+
+- Fornisce astrazione funzionale al progetto
+  - Ogni componente fornisce servizi al suo ambiente
+  - La sua astrazione desrive il comportamento esterno
+  - Nasconde i dettagli esterni
+- Comunicazione attraverso
+  - Parametri
+  - Ambiente globale
+
+### Astrazione sui dati
+La rappresentazione (implementazione) dei dati e delle operazioni è inaccessibile all'utente
+
+## Modalità di passaggio dei parametri
+**Terminologia**
+``` c
+int foo (int n) { ... } // Parametro formale
+...
+x = f(y + 3); // Parametro attuale
+```
+
+Tipi di Pragmatiche (flusso di informazioni tra chiamante e chiamato):
+- `main` $\rarr$ `proc`
+- `main` $\larr$ `proc`
+- `main` $\lrarr$ `proc`
+
+### Passaggio per valore
+> Valore del parametro attuale assegnato al formale, che si comporta come variabile locale
+
+Pragmatica `main` $\rarr$ `proc`
+
+``` c
+void foo (int x) { x = x+1; }
+...
+y = 1;
+foo(y+1);
+// Qui y vale 1
+```
+
+Il parametro formale è una variabile locale che non influsce su y
+
+Molto costoso per dati grandi
+
+### Passaggio per riferimento (per variabile)
+``` c
+void foo (reference int x) { x = x+1; }
+...
+y = 1;
+foo(y);
+// Qui y vale 2
+```
+> Il parametro formale è un riferimento, `x` è un alias di `y`
+
+Pragmatica `main` $\lrarr$ `proc`
+
+#### Linguaggio C
+C passa per valore un riferimento, facendo uso di puntatori
+
+### Passaggio per costante (o *read-only*)
+> Passaggio per valore che garantisce la pragmatica `main` $\rarr\$ `proc` a spese dell'efficienza
+
+### Passaggio per risultato
+``` c
+void foo (result int x) { x = 8; }
+...
+y = 1;
+foo(y);
+// Qui y vale 8
+```
+> Duale del passaggio per valore
+
+Pragmatica `main` $\larr$ `proc`
+
+Il parametro formale `x` viene legato ad `y`, ma pone il suo valore al posto di `y` solo al termine di `foo`
+
+### Passaggio per valore/risultato
+``` c
+void foo (value-result int x) { x = x+1; }
+...
+y = 8;
+foo(y);
+// Qui y vale 9
+```
+> Insieme valore + risultato
+
+Pragmatica `main` $\lrarr$ `proc`
+
+Differisce dal passaggio per risultato semplice perchè non è possibile comunicare da fuori a dentro
+
+#### Value-result != riferimento
+Se chiamo `foo(a, a, b)` è possibile modificare il primo parametro e non il secondo, e quindi in caso di controlli avere output differenti, oppure in caso di return non sapere quale dei due valori sarà assegnato ad `a`
+
+### Valore e rifeimento: morale
+- Passaggio per valore
+  - Sematica ed implementazioni semplici
+  - Costoso il passaggio di parametri
+  - Necessità di altri meccanismi per comunicare `main` $\larr$ `proc`
+- Passaggio per riferimento
+  - Sematica complessa e *aliasing*, implementaizone semplice
+  - Passaggio efficente
+
+### Passaggio per Nome (macro)
+> Una chiamata alla procedura P è la stessa cosa che eseguire il corpo di P dopo aver sostituito i parametri attuali al posto di quelli formali
+
+In Algol-W era il defalut, ma questo può generare parecchi problemi
+
+``` c
+int y;
+  void fie (name int x){
+  int y;
+  x = x + 1; y = 0;
+  }
+...
+y = 1;
+fie(y);
+```
+
+Al posto di `fie(y)` viene quindi inserito
+
+``` c
+{ int y;
+y = y + 1;
+y = 0; }
+```
+
+Ma le due `y` sono diverse!
+
+A livello di implementazione veniva passata la coppia <parametro, ambiente>
+
+Pragmatica `main` $\lrarr$ `proc`
+
+#### Value-result != nome
+Anche qui è diverso, se chiamo `fie(i, A[i])` ed incremento i dentro la funzione avrò un corpo di funzione differente
+
+### Modalità di passaggio: riepilogo
+|| Implementazione | Operazioni | Attuale modificato? | Alias? |
+| --- | --- | --- | --- | --- |
+| Var, riferimento | Riferimento | RW | Si | Si |
+| Valore | Valore | RW | No | No |
+| Costante (r-o) | Valore o riferimento | RO | No | Possibile |
+| Valore/Risultato | Valore | RW | Si | No |
+| Name | Chiusura | RW | Si | Si |
+
+## Funzioni di ordine superiore
+### Funzioni come parametro
+
+### Funzioni come risultato
+
+
+## Gestione delle eccezioni
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
