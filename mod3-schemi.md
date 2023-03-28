@@ -146,12 +146,105 @@ Un modo efficiente per rappresentare un insiemee un array di lunghezza pari alla
 In esso il bit j-esimo indica se l'elemento appartiene o meno all'insieme. Questo però occupa moltissimo spazio, infatti oggi si usano le tabelle hash
 
 ## Tipi Riferimento
+> *Qualcosa* che fa riferimento ad un dato
 
+Operazioni possibili sono *creazione*, *controllo dell'uguaglianza* e *deferenziazione* (accesso al dato referenziato)
 
+Particolarmente presenti in linguaggi a basso livello
 
+L'implementazione più comune è quella del puntatore, usati anche con gli array come istanza dei riferimenti
 
+I riferimenti possono diventare:
+- **Wild**: Quando non inizializzati
+- **Dangling**: Quando il dato referenziato è stato deallocato
 
+Sintassi C: `int* x`, riferimento (puntatore) ad una locazione di memoria (variabile) che contiene un intero
 
+Esiste il puntatore *canonico* `NULL`
 
+I linguaggi con riferimenti forniscono un **operatore di riferimento alle variabili**, in C `&`
 
+Esiste anche un **operatore di dereferenziazione**, in C `*`
+
+``` c
+float pi = 3.1415;
+float* p = NULL;
+p = &pi;
+*p = *p + 1;
+```
+
+- In questo esempio assegnamo il float alla variabile di nome `pi`
+- Dichiariamo un puntatore ad un float con nome `p`, inizializzandolo a `NULL`
+- Assegnamo al dereferenziazione di `pi` alla variabile `p`, così che tramite `p` possiamo accedere al valore
+- Il box con dentro `3.1415` avrà `4.1415`
+
+### Memory Leak
+Nei linguaggi con riferimenti può incorrere una **deallocazione implicita**, ovvero quando cambiamo il valore del puntatore a `NULL` in C
+
+Questo può causare **memory leak**, ovvero porzioni di memoria non accessibili ma ancora in uso \
+Alcune soluzioni sono dei *garbage collector* o *borrow checker*
+
+Un'altra cosa che hanno i linguaggi con riferimenti è un operatore di **deallocazione esplicita**, come la `free()` in C \
+È buona norma NULLificare un puntatore liberato da `free()`, così da non avere una *dangling reference*
+
+### Rust
+In Rust ci sono i puntatori ma hanno una gestione sicura tramite controlli sintattici effettuati a compile time
+
+## Insiemi potenza
+Insieme potenza:
+$$\mathbb{P}(A) = \{B : B \subseteq A\}$$
+
+Coppia:
+$$(a, b) := \{\{a\}, \{a, b\}\}$$
+
+Insieme cartesiano:
+$$A \times B := \{(a, b) : a \in A \land b \in B\}$$
+
+Il prodotto cartesiano è un insieme non proprio di $\mathbb{P}(\mathbb{P}(A \cup B))$
+
+## Tipi prodotto
+Quando si combinano due o più tipi in una struttura fissa si parla di **tipi prodotto**, come coppie, tuple, record e varianti
+
+### Coppie e Tuple
+> Tupla: Prodotto di $n$ tipi come prodotto cartesiano
+
+> Coppia: Tupla a 2 tipi
+
+### Record
+Strutture in C/Rust, Classi/Record in Java. Gli elementi di un **record** sono chiamati *campi*
+
+L'ordine dei campi può essere significativo per la rappresentazione in memoria, poichè spesso memorizzati in posizioni contigue abbiamo bisogno di padding in alcuni casi
+
+Esempio di C di SO, dove l'ordine di `long` e `int` nelle strutture cambia la quantità di spazio richiesto in memoria
+
+In Rust inoltre non possiamo assegnare 3 su 5 elementi di un array, ma mettere un elemento nullo, altrimenti avremo un errore
+
+### Pattern Matching
+Abbiamo bisogno di costrutti per *destrutturare* i tipi prodotto, uno di questi è il **pattern matching**
+
+Esempio in Rust:
+``` rust
+struct Person { name: [ char; 3 ], age: i32 }
+struct PersonR { name: [ char; 3 ], age: [ char; 4 ] }
+
+let eva = Person{ name: ['E','v','a'], age: 25 };
+let Person{ name, age } = eva; // implicit pattern-matching
+
+let evaR = PersonR{ name, age: match age {
+  1..=10 => [ 'K','i','d','' ],
+  11..=20 => [ 'T','e','e','n' ],
+  _ => [ 'O', 'l', 'd', '' ]
+}}
+```
+
+### Tipi Ricorsivi
+Utili per definire strutture dati che possiamo modificare dinamicamente. Esempio di tipo ricorsivo in Java:
+```
+record IntList( int n, IntList cons ){}
+IntList l = new IntList(
+  1, new IntList(
+    2, new IntList( 3, null )
+  )
+);
+```
 
