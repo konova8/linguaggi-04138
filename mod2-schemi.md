@@ -654,10 +654,93 @@ Anche qui è diverso, se chiamo `fie(i, A[i])` ed incremento i dentro la funzion
 | Name | Chiusura | RW | Si | Si |
 
 ## Funzioni di ordine superiore
+Funzioni come parametri di altre funzioni, possibilità data da alcuni linguaggi
+
+Due possibili modi per gestire l'ambiente della funzione:
+- Funzioni come argomento, puntatore al RdA all'interno della pila
+- Funzione restituita da una chiamata di procedura
+
 ### Funzioni come parametro
+Il passaggio per nome è un caso particolare, si passa una funzione senz argomenti (corpo = exp)
+
+Esempio
+``` c
+int x = 4; int z = 0;
+int f (int y)
+{
+  return x*y;
+}
+void g (int h(int n))
+{
+  int x;
+  x = 7;
+  z = h(3) + x;
+  end;
+}
+...
+{
+  int x = 5;
+  g(f);
+}
+```
+Quando `f` sarà chiamata (tramite `h`) quale `x` (non locale) sarà usata?
+- Scope statico: `x` esterna
+- Scope dinamico: o la `x` del blocco di chiamata, o la `x` interna, dipende dal binding dell'ambiente
+
+#### Deep Binding / Shallow Binding
+- *Deep binding*: Ambiente al momento della creazione del legame della funzione
+- *Shallow binding*: Ambiente al momento della chiamta della funzione
+
+#### Chiusure
+> Passare dinamicamente il legame col codice della funzione e il suo ambiente non locale (`<code, env>`)
+
+Alla chiamata di una procedura passata come parametro alloca il RdA e prende il puntatore di catena statica di chiusura
+
+#### Scope statico con funzioni come parametro
+Shallow binding:
+- Sembra non cambi, ma in realtà in presenza di funzioni annidate e ricorsione è possibile differisca da Deep Binding
+- Mai usato nella pratica
+
+Deep binding:
+- Implementato con chiusure
+
+#### Scope dinamico con funzioni come parametro
+Shallow binding:
+- Non necessita di particolari attenzioni, per accedere alle variabili basta salire la pila
+
+Deep binding:
+- Usa necessariamente qualche forma di chiusura per "congelare" uno scope da riattivare più tardi
+
+#### Esempio Scope statico Deep/Shallow binding
+``` c
+{
+  void foo(int f(), int x)
+  {
+    int fie()
+      return x;
+
+    int z;
+    if (x == 0) z = f();
+    else foo(fie, 0);
+  }
+
+  int g()
+    return 1;
+
+  foo(g, 1);
+}
+```
+Con Deep Binding il valore assegnato a `z` è 1, con Shallow Binding è 0
+
+Con Deep Binding
+![Esempio](img-schemi/esDeepShallow.png)
+
+Nota: Con Shallow Binding il puntatore nella chiusura di `fie` punta al RdA di `foo` subito sopra, prendendo quindi `x = 1`
 
 ### Funzioni come risultato
+In alcuni linguaggi (come quelli funzionali) è possibile restituire come risultato di una funzione un'altra funzione. Questo impone però di avere le variabili locali di quest'ultima funzione ancora accessibili
 
+Si utilizzano le chiusure per questo, ma la gestione della pila risulta più complessa
 
 ## Gestione delle eccezioni
 
