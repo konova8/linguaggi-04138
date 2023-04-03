@@ -248,3 +248,109 @@ IntList l = new IntList(
 );
 ```
 
+## Tipi Somma
+I tipi somma descrivono **composizioni di tipi**
+
+![Tipi Somma](img-schemi/tipiSomma.png)
+
+Nota `int*` si chiama *insieme etichettato*, così facendo sappiamo sempre se ho carattere o intero (esempio con `0`)
+
+Le unioni disgiunte di tipi sono solitamente chiamate **tipi somma**
+
+In alcuni linguaggi possiamo usare le `enum` per catturare il caso dei tipi somma (come con Rust)
+
+Java ha inoltre introdotto le `sealed classes`, che definiscono le uniche strutture dati che possono apparire come uno dei possibili tipi presenti in un dato tipo somma
+
+In C esistono le `union`, ma nel caso si legga un `char` come intero non abbiamo un errore
+
+### Tipi Ricorsivi
+I tipi somma sono un'alternativa ai tipi prodotto per i tipi ricorsivi (non serve `NULL`)
+
+## Relazioni e Funzioni
+Una **relazione** è un sottoinsieme di una sequenza di insiemi, che rappresente appunto la relazione tra elementi
+
+Una **relazione binaria** è una relazione in cui gli insiemi in oggetto sono solo due (anche due volte lo stesso)
+
+Una relazione è detta **funzione parziale** se mappa ogni valore del dominio ad un unico valore del codominio, e non assumiamo che la relzione consideri tutti i valori del primo insieme (dominio)
+
+Se abbiamo $S = \{1, 2, 3\}$ e $T = \{f, t\}$ il numero di possibili $g : S \rightarrow T$ è $2^3$. Che sono $((f, f, f), (t, f, f), \dots, (t, t, t))$
+
+Possiamo quindi definire gli insiemi (o meglio delle relazioni) così $f = \{(1, 1), (2, 0), (3, 1)\} = \{1, 3\}$
+
+### Tipi funzione
+Non tutti i linguaggi supportano le funzioni come tipo denotabile, di solito lo fanno solo i lingauggi funzionali
+
+Ad esempio, la funzione `T f(P1 p_1, ..., Pn p_n) {...}` ha tipo `P1 -> ... -> Pn -> R` ovvero $R^{P1^{...^{Pn}}}$
+
+## Algebra dei tipi
+I tipi prodotto, somma e funzione si chiamani **tipi di dati algebrici**
+
+I sistemi di tipi possono usare le proprietà di questa algebra per esprimere e verificare le proprietà dei programmi
+
+![Alg Tipi](img-schemi/algTipi.png)
+
+## Equilvalenza di tipo
+> Quando sono uguali due tipi?
+
+Le risposte possono variare in base al contesto in cui si verifica l'uguaglianza
+
+### Preordini e equivalenze
+Le relazioni binarie godono di proprietà **riflessiva**, **simmetrica**, **antisimmetrica** e **transitiva**
+
+- Quando una relazione è riflessiva e transitiva la chiamiamo **preordine**
+- Se è anche simmetrica la chiamiamo **equivalenza**
+- Quando è un preordine antisimmetrico la chiamiamo un **ordine parziale**
+
+### Equivalenza di Tipo Nominale
+Se il sistema di tipi considera una nozione **nominale**di equivalenza tra tipi ($NTE$) ogni nuova definizione di tipo introduce un nuovo **nome** diverso da quelli esistenti
+
+Sia $name(T) = n$ la funzione che dato un tipo $T$ ritorna il nome associato $n$, allora $T_1 NTE T_2 \iff name(T_1) = name(T_2)$
+
+Quindi sebbene i tipi `Dollaro=int` e `Euro=int` siano indistinguibili per il sistema nominale non sono equivalenti
+
+#### Duck Typing
+> Un modo per eseguire il controllo dei tipi a runtime. Finchè riesco ad eseguire la computazione va bene
+
+Ovvero "Se vola come una papera, se starnazza come una papera, e si muove come una papera allora è una papera", per quanto magari non lo sia veramente
+
+### Equivalenza di Tipo Strutturale
+Dal duck typing si è arrivati a un'alternativa strutturale (quindi fatta a compile time)
+
+Possiiamo guardare le *differenze strutturali* tra i valori, l'equivalenza di tipo strutturale ($STE$) può quindi essere eseguita staticamente
+
+Dobbiamo però guardare tutte le possibili branch e tutti i vari casi, quindi è più costoso
+
+Quindi la definizione di equivalenza strutturale (più complessa) diventa:
+![](img-schemi/tipoStrutturale.png)
+
+### Tipo Nominale vs Tipo Strutturale
+Il tipaggio nominale presenta i seguenti vantaggi:
+- Nozione rigorosa di equivalenza
+- Collegamento diretto per il runtime
+- Denotazione intuitiva dei tipi ricorsivi, come liste di liste
+- Il controllo del sottotipaggio è un controllo diretto
+
+Questi vantaggi hanno reso il sistema di tipo nominale la cosa più usata (anche per semplicità)
+
+## Compatibilità di tipo
+> Versione indebolita di equivalenza
+
+È una *preordine*, chiaramente non simmetrica
+
+. Siano T e S due tipi:
+- I valori di S sono un **sottoinsieme** dei valori di T
+- I valori di S sono un **sotoinsieme di valori canonicamente corrispondenti** di T (gli int hanno sempre un float canonico corrispondente)
+- I valori di S sono un **sottoinsieme di valori arbitrari corrispondenti** di T. Come quando il linguaggo fa la conversione automatica di un tipo (es. float in int)
+- Tutte le **operazioni** sui valori di T sono possibili anche sui valori di S. Questo è l'esempio usato per il duck typing prima
+
+## Coercizione e Casting di Tipo
+È necessario avere un sistema di **conversione di tipi**. Chiamiamo **coercizione di tipo** l'applicazione **implicita** di una conversione di tipo canonica/arbiraria
+
+Chiamiamo **casting di tipo** l'annotazione esplicita nel linguaggio di una conversione di tipo (e di valore)
+
+### Esempio
+`int x = 1 + 5.4`
+- Con coercizione `1` diventa `1.0` e quindi avrò un errore
+- Può succedere che si faccia invece sul float
+- Oppure si può fare la conversione su entrambi, e dopo aver il risultato la conversione per inserirlo dentro ad `x`
+
