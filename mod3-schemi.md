@@ -354,3 +354,35 @@ Chiamiamo **casting di tipo** l'annotazione esplicita nel linguaggio di una conv
 - Può succedere che si faccia invece sul float
 - Oppure si può fare la conversione su entrambi, e dopo aver il risultato la conversione per inserirlo dentro ad `x`
 
+## Inferenza di Tipo
+> Processo di attribuizione dei tipi alle espressioni, senza annotazione esplicite dei tipi
+
+Per esempio è il comportamento di base delle assegnazioni di Python
+
+Il type checker verificherà che sia tutto a posto
+
+Con espressioni composte da funzioni è più complesso fare inferenza di tipo e verificare tramite type checker se è tutto a posto. Si usa l'**algoritmo di unificazione** per ottenere il tipo esatto \
+Si lascia infatti il *tipo aperto* della variabile fino alla risoluzione delle espressioni
+
+### Algoritmo di Unificazione
+> Risoluzione di sistemi lineari per il calcolo di tipi
+
+![1](img-schemi/unify0.png)
+
+Note:
+- `[]` è l'identità per la composizione, non è un array ma la mappatura di tipi
+- `let {S = T} U C' = C` indica tramite pattern matching implicito che estraggo da C (che so essere un insieme) i valori `S`, `T` e `C'`
+- `FV(T)` è per ottenere le variabili libere di `T`
+- Sul punto 4 abbiamo il caso di tipo funzionale
+
+#### Esempio di esecuzione
+![2](img-schemi/unify1.png)
+
+Ora controlliamo la correttezza partendo dal nostro insieme `C` di partenza
+
+![3](img-schemi/unify2.png)
+
+# Tipi Polimorfi
+## Tipi Monomorfici e Polimorfici
+Se abbiamo bisogno di fare una funzione max che funziona con più tipi ci può tornare utile avere la possiblità di definire tipi che possano assumere più forme (tipi poli-morfi)
+
