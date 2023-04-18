@@ -461,5 +461,44 @@ Il tipo opzione è utile per gestire in maniera strutturata puntatori nulli
 
 L'interprtazione del tipo Option/Maybe è `type Maybe<T> : Some<T> + None`
 
-I tiip risultato sono analoghi ma invece di avere qualcosa/nulla abbiamo ok/errore, sono un'alternativa alla gestione delle eccezioni
+I tipi risultato sono analoghi ma invece di avere qualcosa/nulla abbiamo ok/errore, sono un'alternativa alla gestione delle eccezioni
+
+# Eccezioni
+Possiamo avere una operazione che fallisce, diventa quindi necessario avere un modo strutturato per gestire le eccezioni (i vari tipi)
+
+Una possibile soluzione erano i tipi `Result`, ma è una soluzione macchinosa quando si annidano diverse operazioni
+
+Le **eccezioni** sono un'alternativa ai risultati. In caso di condizione eccezionale (come un errore) il controllo viene trasferito ad un *gestore di eccezioni*
+
+## Gestione delle eccezioni
+Alcuni linguaggi implementano il gestore di eccezioni, ad esempio in Java una divisione per 0 causa `java.lang.ArithmeticException: / by zero`
+
+Per gestire le eccezioni allora esiste il costrutto `try {...} catch {...}` o analoghi, ad esempio in Java
+
+```java
+try {
+  System.out.println( “Let’s try to divide by zero” );
+  double x = 1 / 0;
+} catch ( ArithmeticException exception ) {
+  System.err.println( “You shall not divide by zero!” );
+}
+```
+
+Le eccezioni sono intercettate **tramite nomi**, che spesso i linguaggi consolidano coi simboli del sistema di tipi
+
+In Java tutti i valori sollevabili (throw) e catturabili (catch) sono sottotipi del tipo speciale `Throwable`
+
+Possiamo distinguere `Error` e `Exception`, `Error` e `RuntimeException` sono fallimenti irrecuperabili, e quindi interropono l'esecuzione del programma
+
+Le altre `Exception` invece possono essere gestite
+
+![Eccezioni Implicite vs Esplicite](img-schemi/eccImpVsEsp.png)
+
+### Eccezioni Esplicite
+Java obbliga a gestire le eccezioni in modo esplicito in due modi:
+- Dichiarando che un'operazione lancia un'eccezione
+- Gestendo l'eccezione lanciata all'interno dell'operazione
+
+## Implementare il try-catch
+Sulle slide c'è un esempio su come viene implementato
 
