@@ -386,3 +386,80 @@ Ora controlliamo la correttezza partendo dal nostro insieme `C` di partenza
 ## Tipi Monomorfici e Polimorfici
 Se abbiamo bisogno di fare una funzione max che funziona con più tipi ci può tornare utile avere la possiblità di definire tipi che possano assumere più forme (tipi poli-morfi)
 
+## Poliformismo di tipo
+> Astrarre alcuni dettagli dell'istanziazione concreta del tipo
+
+Concetto con interpretaizone condivisa, ma il *modo* in cui i linguaggi di programmazione lo interpretano varia. Tre tipi di poliformismo:
+- **Ad-hoc** (sovraccarico/overloading), in cui si sovraccarica la definizione di una data operaizone su diversi tipi specifici
+- **Di sottotipo** (subtyping), in cui si stabiliscono relazioni da astratto a specifico tra i tipi, si ottine un poliformismo con operazioni su tipi astratti
+- **Parametrico** (universale), in cui abbiamo simboli astratti che rappresentano parametri di tipo
+
+### Poliformismo Ad-hoc
+> Il compilatore/runtime del linguaggio distingue dal contesto di chiamata definizioni alternative di operazioni con lo stesso nome (`+` con stringhe o interi)
+
+È una sorta di abbreviazione sintattica che scompare appena risolviamo l'invocazione, rendendo l'overloading un meccanismo di **indirizzamento**(dispatch)
+
+Se il dispatch avviene staticamente nel compilato c'è un'effettiva sostituzione, se è dinamico invece viene fatto attraverso tabelle di ricerca
+
+Spesso overloading e coercizione vanno di pari passo, possiamo scrivere `1 + 2.0` che coercizza `1` in `1.0` e utilizza la definizione di `+` per i float
+
+### Poliformismo di sottotipo
+Si basa su una relazione binaria $S <: T$ ($S$ è un sottotipo di  $T$
+
+Un esempio tipico è quello dei sottotipi di `Animale`, come `Gatto` e `Cane`. Questo ritornerà con gli oggetti
+
+$<:$ è un **preordine**, per questo non possiamo usare `Animale` al posto di `Gatto` o `Cane`
+
+Infatti di solito è anche antisimmetrico, il che lo rende un **preordine parziale**
+
+#### Sottotipaggio dei record
+```java
+type Animal:{name:string)
+type Dog:{name:string, bark:string)
+
+type AnimalHouse:{tenant:Animal}
+type DogHouse:{tenant:Dog}
+```
+Dove `Dog` $<:$ `Animal`
+
+- `Animal` e `Dog` sono un esempio di sottotipaggio *in larghezza* (record dei sottotipi con più campi dei loro supertipi
+- `AnimalHouse` e `DogHouse` hanno un sottotipaggio *in profondità* (sostituiamo i campi con i sottotipi
+- `AnimalHouse` e `DogHouse` sono *covarianti* rispetto a `Animal` e `Dog` perchè mantengono le stesse proprietà del sottotipaggio dei tipi di riferimento, cioè
+  - `Dog` $<:$ `Animal`
+  - `DogHouse` $<:$ `AnimalHouse`
+  - Dato che sono sottotipi *in profondità* possiamo usare `*House` in maniera *covariante* solo per le letture, per le scritture abbiamo problemi (`DogHouse` al posto di `AnimalHouse`)
+  - Per le scritture abbiamo bisogno di usarli in maniera *controvariante
+
+![Controvarianza e Covarianza](img-schemi/controVarCoVar.png)
+
+#### Sussunzione (subsumption)
+> Decidere se $S <: T$
+
+Esistono due tipi per definirla, **estensionale** o **intensionale**. In molti casi, i sistemi di tipi definiscono relazioni di sottotipaggio per i tipi base (`int <: float` o `char <: string`)
+
+In ogni implementazione con il poiliformismo di sottotipo abbiamo il problema che il tipo di ritorno di una funzione non sarà esattamente quello richiesto
+
+### Poliformismo parametrico
+I tipi parametrici (come i Set) sono tipi su cui sappiamo di poter fare operazioni (chiamate parametriche) senza sapere esattamente la loro forma
+
+Dobbiamo definire una notazione che renda esplicito quando i tipi accettano parametri, ad esempio la versione parametrica di `Set` può essere vista come `Set<T>`
+
+In Java `<T extends Comparable> T max (T x, T y) {...}`
+In Rust `fn max<T: Comparable>(x:T, y:T) -> T {...}`
+
+### Poliformismo parametico e di sottotipo
+I linguaggi con poliformismo parametrico permettono di annotare esplicitamnete la direzione che l'utente si aspetta per l'uso dei tipi parametrici
+
+![Poliformismo parametrico e di sottotipo](img-schemi/paramSotto.png)
+
+Nota:
+- Producer -> Extends
+- Consumer -> Super
+
+## Tipi Opzione e Risultato
+Il tipo opzione è utile per gestire in maniera strutturata puntatori nulli
+
+L'interprtazione del tipo Option/Maybe è `type Maybe<T> : Some<T> + None`
+
+I tiip risultato sono analoghi ma invece di avere qualcosa/nulla abbiamo ok/errore, sono un'alternativa alla gestione delle eccezioni
+
