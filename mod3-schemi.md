@@ -502,3 +502,85 @@ Java obbliga a gestire le eccezioni in modo esplicito in due modi:
 ## Implementare il try-catch
 Sulle slide c'è un esempio su come viene implementato
 
+# Sicurezza della memoria: Garbage Collection e Borrow-checking
+## Dangling Pointers/References
+> Dangling: Quando fa riferimento ad una destinazione non valida
+
+Difficili da individuare, in alcuni casi proprio impossibile
+
+> Wild: Quando non sono inizializzati
+
+Piu' semplici da individuare
+
+### Tombstones
+> Modo per gestire i riferimenti dangling
+
+Associano ad ogni allocazione a cui accede un puntatore una parola aggiuntiva allocata in memoria, chiamata *tombstone*
+
+Quindi gli accessi al puntatore sono accessi a due hop, prima alla tombstone e poi alla vera locazione di memoria
+
+Tiene sotto controllo tutte le possibili duplicazioni del puntatore, che puntano tutti alla stessa tombstone
+
+Il costo e' la duplicazione delle deferenziazioni, piu' il tempo per creare la tombstone \
+Inoltre abbiamo un cimitero con delle tombe non piu' puntate che occupa memoria e che non possiamo liberare
+
+### Locks and Keys
+> Alternativa alle tombstone, ma solo per puntatori allo heap. Per ogni alocazione di un oggetto sulla heap ci associamo un *lock* (parola casuale)
+
+Ogni volta che si dereferenzia un puntatore si controlla che la chiave possa "aprire" il lock, cioe' che le due parole coincidano
+
+Puo' accadere che allocazioni successive possano utilizzare l'area di memoria precedentemente usata come lock, ma e' statisticamente improbabile che la cella di memoria attuale contenga esattamente il valore del lock precedentemente presente
+
+Costo significativo, sia come spazio che come efficienza
+
+### Garbage Collector
+> Tecnica per non dover gestire manualmente la deallocazione della memoria nello heap
+
+Composto da due parti:
+- **Garbage detection**
+- **Garbage collection**
+
+Diventa piu' facile lavorare sugli oggetti in memoria se il collector conosce la loro forma/limiti e quali posizioni di un oggetto corrispondono a puntatori
+
+Possiamo fornire queste informazioni sia staticamente che dinamicamente
+
+#### Reference Count
+> Trovare oggetti che non hanno puntatori ad essi
+
+Quando si alloca un oggetto nello heap si inizializza un contatore di quell'oggetto che conta i riferimenti a quella porzione di memoria
+
+Quando arriva a 0 allora la porzione di memoria puo' essere liberata
+
+Se un oggetto punta a catena ad altri oggetti bisogna aggiornare anche i loro contatori
+
+Questa tecnica rende impossibile gestire strutture ricorsive e puo' generare memory leak se abbiamo oggetti puntati a vicenda
+![Memory Leak](img-schemi/gc1.png)
+
+#### Mark and Sweep
+Si eseguono in sequenza due fasi:
+- **Mark**: Marca tutti gli oggetti nello heap come garbage, attraversa lo stack e segue i puntatori, demarcando gli oggetti che incontra
+- **Sweep**: Visita allo heap che raccoglie tutti gli oggetti ancora marcati come garbage
+
+Mark and Sweep non libera memoria quando incontra garbage, ma e' il runtime che lo invoca quando lo ritiene utile, come quando l'heap sta esaurendo la memoria
+
+Esempio di *stop-the-world* garbage collection, cioe' il programma si ferma per far entrare in funzione quest'ultimo
+
+Facile da implementare ed efficiente rispetto ad altre tecniche incrementali. Hanno pero' due svantaggi principali:
+- Il programma non e' reattivo, ha degli spike di latenza
+- Le prestazioni sulla fase della marcatura dipendono dalle dimensioni dello heap e dallo stack
+
+#### Inversione di puntatori
+Si usa una coppia di puntatori (curr/prev) per seguire e marcare le strutture dati come alberi
+
+![Inversione di puntatori, contrassegnare oggetti](img-schemi/gc2.png)
+
+#### Stop and Copy
+> Evoluzione di Mark and Sweep, consente la pulizia dello heap eliminando sia la prima fase di marcatura che lo sweep
+
+Si divide l'heap in due regioni uguali, tutte le allocazioni avvengono in una meta'
+
+Quando la meta' corrente e' quasi piena viene chiamato il garbage collector, che copia ogni elemento raggiungibile dallo stack nell'altra meta', e rende la porzione di memoria usata in precedenza libera (togliendo quindi tutti gli oggetti non raggiunti)
+
+Per quanto ma memoria sia dimezzata il tempo richiesto e' proporzionale alla quantita' di oggetti non garbage, e aumentando la memoria disponibile diminuiscono le chiamate al garbage collector.
+
+Inoltre c'e' un ulteriore vantaggio perche' viene fatta una deframmentazione della memoria
