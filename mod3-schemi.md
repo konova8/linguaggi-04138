@@ -584,3 +584,98 @@ Quando la meta' corrente e' quasi piena viene chiamato il garbage collector, che
 Per quanto ma memoria sia dimezzata il tempo richiesto e' proporzionale alla quantita' di oggetti non garbage, e aumentando la memoria disponibile diminuiscono le chiamate al garbage collector.
 
 Inoltre c'e' un ulteriore vantaggio perche' viene fatta una deframmentazione della memoria
+
+# Tipi di Dato Astratto e Object Orientation
+## Tipi di Dato Astratto
+Le macchine gestiscono stringhe di bit. Un tipo di dato astratto è un tipo che con una *capsula* viene nascosto il suo "basso livello", in questo modo con linguaggi type-safe possiamo interagire con il tipo solo attraverso la capsula
+
+Abbiamo quindi che un **tipo di dato astratto** (ADT) e'
+> Un tipo che definisce i possibil valori che lo compongono e le possibili operazioni che possono agire su questi
+
+Un ADT e' costituito da:
+- Il nome del tipo astratto A
+- Il tipo di rappresentazione concreta T
+- Implementazioni di operazioni per creazione e manipolazione di valori di tipo A
+- Un confine di astrazione che racchiude T e lo rende accessibile solo attraverso le operazioni di A.
+
+### Information Hiding
+L'interfaccia collega il pogramma e gli ADT, e permette di nascondere le informazioni relativi a strutture e funzionamento delle operazioni
+
+### Indipendenza della rappresentanza
+L'information hiding migliora la componibilita' del codice in modo simile al poliformismo di sottotipo/parametrico
+
+La proprieta' dei type-safe ADT e' chiamata **indipendenza dalla rappresentazione**, cioe' implementaizoni corrette dello stesso ADT sono all'esterno equivalenti
+
+#### Esempio in Rust
+```
+trait Counter {
+  fn new() -> Self;
+  fn get( &self ) -> u32;
+  fn inc( &self ) -> Self;
+}
+struct SC { counter: u32 }
+impl Counter for SC {
+  fn new() -> Self { SC { counter: 0 } }
+  fn get( &self ) -> u32 { self.counter }
+  fn inc( &self ) -> Self
+    { SC { counter: self.counter + 1 } }
+}
+fn use_counter<C>( c: &mut C ) where C: Counter {
+  let c = c.inc(); let c = c.inc(); print!( "{}", c.get() );
+}
+fn main(){ use_counter( &mut SC::new() ) }
+```
+
+### Moduli
+Gli ADT possono essere visto come modo per "aggregare" il codice che  appartiene allo stesso tipo in un unico artefatto
+
+> Il **modulo** e' un modo per fornire piu' ADT all'interno dello stesso pacchetto
+
+Abbiamo in comune ai vari linguaggi sono la possibilita' si suddividere il programma in modo che ogni modulo contenga dati e operazioni, e la visibilita' dei dati che racchiude
+
+### ADT e Tipi Esistenziali
+Possiamo vedere il `trait` di Rust come prima come un tipo esistenziale, perche' non vediamo il tipo concreto. Grazie a questo possiamo avere type safety anche senza sapere il tipo concreto a cui si appoggia l'ADT
+
+Al contrario degli oggetti possiamo usare due tipi che implementano l'interfaccia `CounterADT` tra di loro, perche' per il sistema di tipi risultano compatibili tra loro
+
+## Oggetti Esistenziali
+Abbiamo visto che possiamo implementare un'interfaccia in piu' modi con gli ADT, catturano l'information hiding e l'indipendenza della rappresentazione, ma rendono incompatibili le due implementazione di un'interfaccia
+
+![ADT Type Mismatch Error](img-schemi/oggEsistenzialiTypeMismatch.png)
+
+Gli oggetti esistenziali sono un'alternativa agli ADT, che consente a piu' implementazioni dello stesso tipo esistenziale di interagire
+
+Possiamo definire oggetti come *tipi concreti* che *mantengono il loro stato* (implementazione) *interno* e portano con se' l'associazione con il loro tipo esistenziale
+
+Esempio di ADT fatto pero' con gli oggetti:
+![Oggetti Esistenziali Type Mismatch Error](img-schemi/oggEsistenzialiTypeMismatch2.png)
+
+Qui vediamo che non abbiamo definizione di tipo e generazione di un abitante, ma il tipo e l'abitante sono la stessa cosa
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
