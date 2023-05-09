@@ -633,6 +633,8 @@ Gli ADT possono essere visto come modo per "aggregare" il codice che  appartiene
 
 Abbiamo in comune ai vari linguaggi sono la possibilita' si suddividere il programma in modo che ogni modulo contenga dati e operazioni, e la visibilita' dei dati che racchiude
 
+Notiamo che gli ADT sono un caso degenere dei moduli
+
 ### ADT e Tipi Esistenziali
 Possiamo vedere il `trait` di Rust come prima come un tipo esistenziale, perche' non vediamo il tipo concreto. Grazie a questo possiamo avere type safety anche senza sapere il tipo concreto a cui si appoggia l'ADT
 
@@ -652,30 +654,56 @@ Esempio di ADT fatto pero' con gli oggetti:
 
 Qui vediamo che non abbiamo definizione di tipo e generazione di un abitante, ma il tipo e l'abitante sono la stessa cosa
 
+### Oggetti vs ADT
+Gli ADT adottano una visione "aperta" dei tipi esistenziali, quando importiamo una implementazione la "apriamo" immediatamente, prima dell'uso effettivo
 
+Con gli oggetti manteniamo sempre "chiuso" un oggetto e usiamo i suoi metodi per accedere al suo stato interno
 
+La differenza principale e' quindi che un programma puo' liberamente mescolare implementazioni dello stesso tipo di oggetto (esistenziale)
 
+Questo risulta molto comodo in presenza di **sottotipaggio** e di **ereditarieta'**
 
+### Oggetti in OOP
+> Capsula che contiene sia dati che operazioni per manipolarli e che fornisce un'interfaccia al mondo esterno attraverso la quale è possibile accedervi
 
+Per gli oggetti:
+- operazioni = metodi
+- variabili interne = campi
 
+Operazioni e variabili su oggetti possono essere visibili ovunque, visibili solo per alcuni oggetti o anche completamente private
 
+## Classi
+> Specificare un modello di implementazione di un riferimento che contiene le variabili e i metodi comuni alla stessa classe di oggetti
 
+```java
+class Counter {
+  private int x=1;
+  public int get(){
+    return x;
+  }
+  public void inc( int i ){
+    x = x+i;
+  }
+  }
+Counter c1 = new Counter();
+Counter c2 = new Counter();
+Counter c3 = new Counter();
+```
 
+Le classi memorizzano l'implementazione del codice di tutti i suoi oggetti e se piu' oggetti usano lo stesso metodo usiamo un'unica implementazione, ovvero salviamo l'implementazione del metodo in memoria una sola volta
 
+`self` o `this` vengono usati per indicare l'oggeto corrente
 
+### Gestione di Oggetti in Memoria
+Linguaggi come Java memorizzano gli oggetti sull'heap usando il garbage collector per gestire la deallocazione
 
+Linguaggi come C++ invece consentono l'allocazione e la deallocazione manuale sullo stack
 
+### Classi vs Prototipi
+Alternativa alle classi, si basa sulla possibilita' per gli oggetti di delegare parti della loro implementazione ad altri oggetti
 
+- Se l'oggetto non possiede quel campo o non definisce quel metodo, questo delega implicitamente l’azione al delegato
+  - Se il delegato possiede quel campo o implementa quel metodo, allora esegue l'azione associata e riferisce al figlio il risultato
+  - Al contrario, la catena di chiamate prosegue ai delegati dei delegati e così via, eventualmente fino a raggiungere il prototipo vuoto e a segnalare un errore
 
-
-
-
-
-
-
-
-
-
-
-
-
+Un oggetto basato su prototipi puo' cambiare il suo delegato a tempo di esecuzione, un comportamento quasi sempre impedito nei linguaggi basati su classi
