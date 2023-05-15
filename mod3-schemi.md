@@ -707,3 +707,91 @@ Alternativa alle classi, si basa sulla possibilita' per gli oggetti di delegare 
   - Al contrario, la catena di chiamate prosegue ai delegati dei delegati e così via, eventualmente fino a raggiungere il prototipo vuoto e a segnalare un errore
 
 Un oggetto basato su prototipi puo' cambiare il suo delegato a tempo di esecuzione, un comportamento quasi sempre impedito nei linguaggi basati su classi
+
+### Encapsulation (Incapsulamento)
+Si distinguono almeno due viste, quella **privata** e quella **pubblica**. La vista pubblica di un oggetto e' solitamente indicata come **interfaccia**
+
+#### Sottotipi
+In OO possiamo considerare le **classi come i tipi**
+
+Possiamo accedere ai campi di `S` disponibili in `T`, e di invocare metodi di `S` disponibili in `T` (con `S <: T`)
+
+### Abstraction (Astrazione)
+Le **interfacce** fanno da ponte (linguistico) tra classi e tipi.
+
+Per questo consideriamo la definizione di un classe come accompagnata da una definizione implicita di un'interfaccia della vista pubblica di quella classe
+
+Le interfacce permettono di descrivere cosa una classe puo' fare. Questo principio prende il nome di **principio di astrazione**
+
+### Inheritance (Ereditarieta')
+Il sottotipaggio da interfaccia a classe presuppone una relazione di sottotipaggio da interfaccia ad interfaccia, questo viene chiamato **estensione**
+
+Quando applichiamo il **sottotipaggio per le classi**, applichiamo l'idea di estendere da interfaccia ad interfaccia per coprire anche los tato, i vincoli di incapsulamento e l'implementazione dei metodi delle classi
+
+Questo relazione prende il nome di **ereditarieta'**
+
+#### Shadowing di variabili
+Una sottoclasse puo' mascherare i campi della superclasse definendo campi con lo stesso nome
+
+Java adotta una notazione esplicita per non creare ambiguita' (`super` e `this`)
+
+#### Overriding di metodi
+Possiamo fare override delle implementazioni dei metodi ereditati, ovvero "sovrascriverli"
+
+La differenza e' che l'overriding viene risolto dinamicamente, mentre lo shadowing delle variabili viene risolto staticamente
+
+#### Visibilita'
+Abbiamo visto `private` e `public` per cambiare la visibilita' di variabili e metodi
+
+Esiste anche il caso `package`, che estende la visibilita' di una classe a tutte le classi che appartengono allo stesso modulo di quella classe
+
+Esiste anche il caso `protected`, che estende il caso package per consentire a qualsiasi sottoclasse (in qualsiasi modulo) di interagire (internamente) con i campi/metodi protetti della propria superclasse
+
+#### Riassumendo
+- I **sottotipi** hanno a che fare con la **possiblita' di utilizzare un oggettoin un altro contesto**
+  - Relazione tra *interfacce* di due classi
+- L'**erediatarieta'** ha a che fare con la **possiblita' di riutilizzare il codice che manipola un oggetto**
+  - Relazione tra *implementazioni* di due classi
+
+### Classi Astratte
+> Via di mezzo tra interfacce e classi, in quanto possono definire campi e implementazione di metodi, ma anche lascare metodi astratti che le sottoclassi devono implementare/sovrascrivere
+
+Usato per i "fratelli"
+
+### Relazione di Sottotipaggio
+#### Top
+In Java esiste un tipo che e' il tipo padre di tutti i tipi, chiamato `Object`, questo e' utlie per poter usare un tipo generico nei metodi, ad esempio per clonazione o controlli di uguaglianza per "riferimento"
+
+#### Tipi Intersezione
+Possibile fare `extends` di piu' classi, nel caso ci siano sovrapposizioni si chiama **tipo intersezione**, se non c'e' si chiama **tipo unione**
+
+### Costruttori
+Possono esistere procedure diverse per istanziare un oggetto. I costruttori rispondono a questa esigenza
+
+Il costruttore permette di effettuare correttamente l'inizializzazione dei dati, collegando classe e superclasse
+
+### Ereditarieta' Singola vs Multipla
+In alcuni linguaggi una classe puo' ereditare una sola superclasse, e quindi la gerarchia di ereditarieta' e' un albero
+
+Altri invece consentono di ereditare metodi da piu' superlcassi, e quindi la gerarchia di ereditarita' e' un DAG
+
+L'eredita' multipla porta pero' a problemi concettuali e di implementazione
+
+#### Problemi della Ereditarieta' Multipla
+Abbiamo un **conflitto di nomi**, risolvibile (in parte) con:
+- Vietare sintatticamente i conflitti
+- Risolvere esplicitamente ogni conflitto (in C++ si usa `A::method()`)
+- Stabilire una convenzione su quale prendere
+
+### Dynamic Dispatch
+> Il punto in cui astrazione ed ereditarieta' si incontrano e danno origine ad uno dei tratti paradigmatici dell'orientamento agli oggetti
+
+Una sottoclasse puo' ridefinire (override) l'implementazione di un metodo, in modo che il codice eseguito dipnda dal **tipo** di oggetto che riceve il messaggio/metodo
+
+#### Overriding e Overloading
+Overriding | Overloading
+:-: | :-:
+Late Binding | Early Binding
+Informazioni disponibili a tempo di **esecuzione** | Informazioni disponibili a tempo di **compilazione** (statiche)
+
+
