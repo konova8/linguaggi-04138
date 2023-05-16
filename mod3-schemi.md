@@ -794,4 +794,90 @@ Overriding | Overloading
 Late Binding | Early Binding
 Informazioni disponibili a tempo di **esecuzione** | Informazioni disponibili a tempo di **compilazione** (statiche)
 
+## Metodi Statici
+Specifici del linguaggio, non e' una caratteristica del paradigma OO
 
+Alcuni linguaggi permettono di usare `static` per indicare i metodi che il compilatore puo' risolvere staticamente
+
+I metodi statici **non possono essere sovrascritti**, solo sovraccaricati
+
+E' anche possibile **mascherare i metodi statici** e accoppiarli con il sottotipaggio
+
+## Aspetti di Implementazione
+### Oggetti
+```java
+class A {
+  int a;
+  void f(){...}
+  void g(){...}
+}
+class B extends A {
+  int b; int c;
+  void f(){...}
+  void h(){...}
+}
+A o;
+o = new B();
+```
+
+![Aspetti di implementazione, oggetti](img-schemi/implOgg.png)
+
+In un linguaggio a tipaggio statico questa rappresentazione permette di calcolare l'offset di ogni variabile e accedervi in tempo costante
+
+### Classi ed Ereditarieta'
+Per le classi l'implementazione piu' semplice di classi ed ereditarieta' e' quella di elenco concatenato
+
+Questo e' chiaramente inefficiente, perche' per colpa del late binding implica la vista lineare della gerarchia delle classi
+
+### Late *self* binding
+Per l'esecuzione di un metodo avviene quello che avviene per le procedure. A differenza delel procedure i metodi devono accedere anche alle variabili di istanza dell'oggetto su cui vengono allocati (noti solo a run time)
+
+Invece di fare riferimento all'oggetto stesso ed eseguire una doppia ricerca, possiamo definire l'accesso ai campi di istanza come un offset dall'oggetto corrente, e quindi effettuare una sola ricerca
+
+### Ereditarieta' Singola
+Se i tipi sono statici, gli oggetti hanno un insieme finito e **statico** di metodi, che crrispondono a quelli nel descrittore della classe
+
+Questa struttura dati prende il nome di **vtable** (virtual function table)
+
+Con le vtable, ogni definizione di classe corrisponde a una vtable, e tutte le istanze di quella classe condividono la stessa vtable
+
+Quando deiniamo una sottoclasse duplichiamo la vtable, sostituendo tutti i metodi ridefiniti e aggiungendo in fondo i nuovi metodi
+
+In questo modo l'invocazione di un metodo avviene a tempo costante e tiene conto del fatto che si puo' accedere ad un oggetto come ad una delle sue super classi
+
+### Classe Base Fragile
+Per l'ereditarieta' singola le vtable sono molto efficienti, perche' la maggior parte delle informazioni e' determinata staticamente. Il late binding di `self` pero' causa un problema chiamato **classe base fragile**
+
+Si verifica un problema se qualche sottoclasse usa parti di una superclasse che sono state modificate. Puo' essere risolto limitando l'erediarieta' in favore del sottotipaggio
+
+![Classe base fragile](img-schemi/classeBaseFragile.png)
+Aggiungendo il metodo `i()` ad `A` abbiamo che dobbiamo ricompilare anche `B` e tutte le altre sottoclassi di `A`
+
+### Dynamic Method Dispatch (JVM)
+Java compila le classi separatamente l'una dall'altra, e ogni classe da' origine ad un file che la macchina virtuale **carica dinamicamente** quando il programma in esecuzione fa riferimento a quella classe
+
+Questo file contiene la **constant pool**, la tabella di simboli utilizzati nella classe stessa
+
+Quando, in fase di esecuzione, si fa riferimento a un nome per la prima volta (attraverso il suo indice), questo viene risolto: la macchina virtuale carica le classi necessarie(ad esempio quelle in cui viene introdotto il nome) utilizzando le
+informazioni del pool di costanti
+
+Altri aspetti sulle slide
+
+## Java
+### Poliformismo Parametrico e Generici
+Java adotta la nomenclatura **generics** per indicare l'inclusione di questa caratteristica per supportare la programmazione generica
+
+`<T> max ( T x, T y ) { return x > y ? x : y; }`
+
+### Generici e Type Erasure
+Java usa la *type erasure*, che fa si' che tutte le istanze di una determinata classe generica condividano lo stesso codice
+
+### Type Parameter Erasure
+Non possiamo ovviamente invocare `new T()`, poiche' il compilatore non sa che oggetto creare
+
+In java abbiamo il meccanismo di reflection `instanceof`, anche se non e' in grado di distinguere tra `Set<Integer>` e `Set<String>` perche' in case di compilazione vengono risolte entrambe in raw `Set`
+
+### Generici, Wildcards
+Per esprimere annotazioni di **varianza sui generici** Java ha introdotto il carattere wildcard `?` come speciale, quindi abbiamo il tipo `T<?>`, un super tipo di qualsiasi applicazione del tipo generico `T`
+
+Possiamo usarlo anche per esplicitare la covarianza e la controvarianza con `T<? extends S>` e `T<? super S>`
