@@ -1,47 +1,89 @@
-# 1 - Interpreti e Compilatori
+# Capitolo 1 - Interpreti e Compilatori
 $I^{L_A}_{L_B} \rArr$ Interprete scritto in $L_A$ per il linguaggio $L_B$
 
 $C^{L_A}_{L_B, L_C} \rArr$ Compilatore scritto in $L_A$, che traduce da $L_B$ in $L_C$
 
-# 2 - Descrivere un linguaggio di programmazione
+# Capitolo 2 - Descrivere un linguaggio di programmazione
 - **Sintassi**: Regole di formazione
+  - Aspetto Lessicale
+  - Aspetto Grammaticale
 - **Semantica**: Attribuzione di significato
+  - Per il lessico -> Dizionari
+  - Per le frasi devo sapere
+    - A quale linguaggio la frase appartiene
+    - Su quale linguaggio basarmi per darne significato
 - **Pragmatica**: In quale modo frasi corrette?
+  - Insieme di regole che *guidano* l'uso
 - **Implementazione**: Come eseguire una frase corretta
+  - Esegue una frase *sintatticamente corretta* rispettandone la sematica
 
-Quest'ultimo ovvimente solo per i linguaggi di programmazione
+Quest'ultimo ovvimente solo per i linguaggi eseguibili
 
-Linguaggi:
-- Generativi (da Grammatica)
-- Riconoscitivi(da Automa)
+## Lessico e Frasi di un Linguaggio
+- Alfabeto: `a, b, c, ...`
+  - Lessico: Insieme di sequenze finite (parole) costruite con caratteri (simboli) dell'alfabeto
+    - Frasi: Insieme di sequenze finite costruite con parole del lessico
 
-## Grammatica Libera
-- Quadrupla $(NT, T, R, S)$ dove
-  - $NT$ insieme finito di simboli non-terminali
-  - $T$ insieme finito di simboli terminali
-  - $R$ insieme finito di produzioni nella forma
-    - $V \rarr w$ dove $V \in NT$ e $w \in (T \cup NT)^*$
-  - $S \in NT$ è detto simbolo iniziale
-- Esempio: $G = (\{S\}, \{a, b, +, *\}, S, R)$
-  - dove $R = \{S \rarr a, S \rarr b, S \rarr S + S, S \rarr S * S\}$
+### Linguaggio Formale
+> Sottoinsieme di $A^*$, ovvero $L \subseteq A^*$
 
-Forma in cui si trova di solito: $S \rarr a | b | S + S | S * S$
+## Come definire un Linguaggio
+- Generativi/Sintentici:
+  - Linguaggio = insieme di stringhe generate da una **grammatica**
+- Riconoscitivi/Analitici:
+  - Linguaggio = insieme di stringhe riconosciute da un **automa**
+
+### Definire finitamente un linguaggio
+Con un esempio: palindrome
+
+$$A = {a, b} \quad L = \{\epsilon, a, b, aa, bb, ...\}$$
+
+Usando la **Backus-Naur Form** (BNF)
+$$<P> ::= \epsilon \mid a \mid b \mid a <P> a \mid b <P> b$$
+
+O scrivendola come grammatica
+$$P \rightarrow \epsilon \mid a \mid b \mid aPa \mid bPb$$
+
+Definizione ricorsiva in cui:
+- $P$ è detto simbolo *non terminale*
+- $a, b$ sono detti simboli *terminali*
+
+Oppure da queste regole insieme agli assiomi e le regole d'inferenza
+$$ \frac{}{\epsilon \in L(P)} \quad \frac{}{a \in L(P)} \quad \frac{}{b\in L(P)} \quad \frac{w \in L(P)}{awa \in L(P)} \quad \frac{w \in L(P)}{bwb \in L(P)}$$
+con $L(P)$ linguaggio generato a partire dal non terminale $P$
+
+## Grammatiche
+Una **Grammatica libera** è una quadrupla $(NT, T, R, S)$ dove
+- $NT$ insieme finito di simboli non-terminali
+- $T$ insieme finito di simboli terminali
+- $R$ insieme finito di produzioni nella forma
+  - $V \rarr w$ dove $V \in NT$ e $w \in (T \cup NT)^*$
+- $S \in NT$ è detto simbolo iniziale
+
+Esempio: $G = (\{S\}, \{a, b, +, *\}, S, R)$
+- dove $R = \{S \rarr a, S \rarr b, S \rarr S + S, S \rarr S * S\}$
+
+Forma in cui si trova di solito: $S \rarr a \mid b \mid S + S \mid S * S$
 
 ## Derivazioni
 Data $G = (NT, T, R, S)$ libera diciamo che *$v$ si riscrive in un passo in $w$*, denotato con $v \rArr w$, se
 
 $$\frac{v = xAy \qquad (A \rarr z) \in R \qquad w = xzy}{v \rArr w} \qquad x, y, z \in (T \cup NT)^*$$
 
-Diciamo inoltre che *$v$ si riscrive in $w$*, denotato con $v \rArr^* w$ se $v$ si riscrive in più passi in $w$
+Diciamo inoltre che *$v$ si riscrive in $w$*, denotato con $v \rArr^* w$ se $v$ si riscrive in più passi in $w$, cioè
+
+$$\frac{}{v \rArr^* v} \quad \frac{v \rArr^* w \quad w \rArr z}{v \rArr^* z}$$
+
+$\rArr^*$ è la chiusura riflessiva e transitiva della relazione $\rArr$
 
 ## Linguaggio generato
 Il linguaggio generato da una grammatica $G = (NT, T, R, S)$ è l'insieme
 $$L(G) = \{ w \in T^* | S \rArr^* w\}$$
 
-Esempio: $G: S \rarr aSb | ab$ genera $L(G) = \{a^n b^n | n \geq 1 \}$
+Esempio: $G: S \rarr aSb \mid ab$ genera $L(G) = \{a^n b^n | n \geq 1 \}$
 
 ## Derivazioni e Alberi
-- Consideriamo $S \rarr a | b | c | S+S | S*S$ e l'espressione $a + b * c$
+- Consideriamo $S \rarr a \mid b \mid c \mid S+S \mid S*S$ e l'espressione $a + b * c$
 - Consideriamo la **derivazione** $S \rArr \underbar{S} * S \rArr \underbar{S} + S * S \rArr a + \underbar{S} * S \rArr a + b * \underbar{S} \rArr a + b * c$
   - **leftmost**: ad ogni passo riscriviamo il non terminale più a sinistra
   - possibile associarci un *albero di derivazione*
@@ -59,7 +101,8 @@ Esempio: $G: S \rarr aSb | ab$ genera $L(G) = \{a^n b^n | n \geq 1 \}$
 $$\{a^n b^n c^m d^m | n, m \geq 1\} \cup \{a^n b^m c^m d^n | n, m \geq 1\}$$
 
 ## Struttura di un Compilatore
-<img src="img/img/struttura-di-un-compilatore.png">
+<img src="img/struttura-di-un-compilatore.png">
+![Struttura di un Compilatore](img/struttura-di-un-compilatore.png)
 
 ## Fasi principali della Compilazione
 ### Analisi Lessicale (Scanner)
