@@ -6,19 +6,57 @@ Legenda:
 
 ## Capitolo 1 – Macchine astratte, interpreti, compilatori
 1. **Che cosa è una macchina astratta?** E in cosa si differenzia da una macchina fisica?
+  - Una macchina astratta $M_L$ per un linguaggio di programmazione $L$ è un insieme di strutture dati e algoritmi che permettono di eseguire programmi scritti in $L$ \
+  Una macchina fisica serve per svolgere calcoli e algoritmi, la sua struttura è rappresentata della macchina di Von Neumann. \
+  La macchina astratta è la rappresentazione/astrazione di una macchina fisica
+
 2. ***Che cos'è un interprete?*** In cosa consiste il ciclo fetch-decode-execute?
+  - Un interprete per il linguaggio $L$, scritto nel linguaggio $L_0$, è un programma che realizza una funzione parziale (funzione definita su una parte degli input possibili) \
+  $$I^{L_0}_L : (Prog^L \times D) \rightarrow D \quad t.c. \quad I^{L_0}_L(P^L_r, Input) = P^L (Input)$$
+
 3. Cos'è il linguaggio macchina?
+  - Il linguaggio macchina è il linguaggio che è compreso dall'interprete della macchina
+
 4. Possono esistere macchine diverse con lo stesso linguaggio macchina?
+  - Una macchina è in grado di eseguire un unico linguaggio, mentre un linguaggio può essere eseguito da più macchine
+
 5. In quali modi è possibile implementare una macchina astratta? Elencare vantaggi e svantaggi delle varie tecniche.
+  - Realizzazione tramite Hardware: Sempre possibile, garantisce le prestazioni migliori ma i costrutti più astratti risultano molto complessi da realizzare. Inoltre una macchina del genere è immutabile \
+  Emulazione via Firmware: Strutture dati e algoritmi realizzati da microprogrammi che risiedono in ROM. Possibilità di programmi scritti ad alto livello, ma scritti in linguaggi a basso livello quindi prestazioni comunque elevate. Flessibilità superiore a Hardware ma inferiore a Software \
+  Simulazione via Software: Interprete, con strutture dati e algoritmi della macchina astratta scritti usando il linguaggio della macchina ospite. Flessibilità massima ma prestazioni peggiori
+
 6. ***Che cos'è un compilatore?***
+  - Un compilatore da $L$ a $L_0$ è un programma che realizza una funzione
+    $$C_{L, L_0} : Prog^L \rightarrow Prog^{L_0}$$
+    tale che, dato un programma $P^L_r$
+    $$C_{L, L_0}(P^L_r) = P_r c^{L_0} \rArr P^L(Input) = Pc^{L_0}(Input)$$
+
 7. Relativamente alla tecnica d'implementazione software, **descrivere la tecnica d'implementazione interpretativa pura e quella compilativa pura.**
+  - Interpretazione pura: Flessibile, semplice da organizzare e occupa meno memoria, di contro l'esecuzione èrallentata dalla decodifica eseguita in tempo reale, inoltre va interpretato tutte le volte che voglio eseguirlo \
+  Compilazione pura: Efficiente, di contro più difficile da implementare, poco flessibile, difficile fare debug di errori a runtime e codice prodotto occupa memoria
+
 8. ***Quando un interprete si può dire corretto? Quando un compilatore si può dire corretto?***
+  - ***TODO***
+
 9. Confrontare l'implementazione di una macchina astratta su una macchina ospite per mezzo di un interprete o di un compilatore.
+  - Vedi domanda 5 e 7
+
 10. Come vengono implementate nella realtà le macchine astratte? **Che cos'è la macchina intermedia?**
+  - Entrambe le componenti (interpretazione e compilazione) coesistono, alcune istruzioni sono sempre simulate. Una macchina intermedia è una macchina a cui è associato un linguaggio che fa da tramite tra la macchina ospite e la macchina astratta
+
 11. **Quando si dice che una implementazione è di tipo interpretativo e quando di tipo compilativo?** Fare esempi di linguaggi la cui implementazione è di un tipo o dell'altro.
+  - Quando non c'è una fase di compilazione (Python) il linguaggio e' interpretato, non occupa memoria il file binario ma le istruzioni vengono intepretate ed eseguite in tempo reale. Quando c'è una fase di compilazione invece (C) il linguaggio è compilato, occupa memoria ma se vogliamo rieseguirlo non dobbiamo ridecodificare tutto da capo. Ci sono degli ibridi che includono una fase compilativa e una interpretativa come Java
+
 12. L'interprete e il compilatore si possono sempre realizzare?
+  - Nel caso del compilatore sappiamo che preserva la semantica del programma tradotto. Mentre un interprete esegue il linguaggio sorgente. Tutti i linguaggi di programmazione di oggi sono Turing Completi, ovvero sono ugualmente espressivi. Quindi è sempre possibile realizzare un interprete/compilatore
+
 13. Che cosa è l'implementazione via kernel?
-14. Quando si parla di bootstrapping? ## Capitolo 2 – Descrivere un linguaggio di programmazione
+  - Usato per i sistemi operativi, si implementa un un sottoinsieme di un linguaggio, e poi si usa quest'ultimo come linguaggio di implementazione. I vantaggi principali sono la semplicità e la portabilità
+
+14. Quando si parla di bootstrapping?
+  - Quando si usano interpreti e compilatori dello stesso linguaggio per creare un compilatore scritto nel linguaggio della macchina ospite che permette di tradurre dal linguaggio scelto a linguaggio macchina ospite
+
+## Capitolo 2 – Descrivere un linguaggio di programmazione
 15. **Quali sono i livelli di descrizione di un linguaggio?**
 16. Sintassi: qual è l'aspetto lessicale e quale quello grammaticale di un linguaggio?
 17. Cos'è un alfabeto? Cos'è una parola o stringa? **Cos’è $A^*$**? Tale insieme è enumerabile?
@@ -34,7 +72,9 @@ Legenda:
 27. A chi serve definire la semantica di un linguaggio e perché?
 28. Quali tecniche si usano per dare semantica ad un linguaggio di programmazione?
 29. **Imparare le regole di semantica operazionale SOS per il semplice linguaggio presentato a lezione.** Regole di valutazione interna-sinistra ed esterna-sinistra.
-30. Cosa s'intende per pragmatica? Cosa si intende per implementazione di un linguaggio? ## Capitolo 3 – Analisi lessicale-Linguaggi regolari
+30. Cosa s'intende per pragmatica? Cosa si intende per implementazione di un linguaggio?
+
+## Capitolo 3 – Analisi lessicale-Linguaggi regolari
 31. ***Cosa fa l'analizzatore lessicale?***
 32. Cos'è un token?
 33. Cos'è un pattern? Come lo si rappresenta? Cos'è un lessema?
